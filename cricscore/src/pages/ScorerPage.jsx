@@ -344,7 +344,7 @@ const ScorerPage = () => {
         console.error('Failed to fetch updated data after wicket:', error);
       }
 
-      toast.warning('🏏 WICKET! Select a new batsman to continue');
+      toast.warning('WICKET! Select a new batsman to continue');
 
       // Check if this ball completed an over (wickets are valid deliveries)
       const ballsAfterThisBall = (currentInnings?.balls || 0) + 1;
@@ -540,7 +540,7 @@ const ScorerPage = () => {
         if (ballsAfterThisBall % 6 === 0 && ballsAfterThisBall > 0) {
           console.log('🔄 OVER COMPLETE! Clearing bowler selection');
           setSelectedBowler(null);
-          toast.warning('🏏 OVER COMPLETE! Select a different bowler to continue', { duration: 5000 });
+          toast.warning('OVER COMPLETE! Select a different bowler to continue', { duration: 5000 });
         } else {
           toast.success('Ball recorded');
         }

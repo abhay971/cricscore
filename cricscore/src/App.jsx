@@ -14,6 +14,7 @@ const TournamentPage = lazy(() => import('./pages/TournamentPage'));
 const MatchSetupPage = lazy(() => import('./pages/MatchSetupPage'));
 const AllTournamentsPage = lazy(() => import('./pages/AllTournamentsPage'));
 const LiveMatchesPage = lazy(() => import('./pages/LiveMatchesPage'));
+const CompletedMatchesPage = lazy(() => import('./pages/CompletedMatchesPage'));
 const ScorerLoginPage = lazy(() => import('./pages/ScorerLoginPage'));
 const ScorerMatchListPage = lazy(() => import('./pages/ScorerMatchListPage'));
 
@@ -51,6 +52,7 @@ function AnimatedRoutes() {
         <Route path="/match/:matchId" element={<ViewerPage />} />
         <Route path="/match/:matchId/score" element={<ScorerPage />} />
         <Route path="/matches/live" element={<LiveMatchesPage />} />
+        <Route path="/matches/completed" element={<CompletedMatchesPage />} />
 
         {/* Scorer Routes */}
         <Route path="/scorer/login" element={<ScorerLoginPage />} />

@@ -44,7 +44,7 @@ const SplashScreen = ({ onComplete }) => {
         }}
       >
         <div className="w-32 h-32 mx-auto mb-6 bg-gradient-red-black rounded-full flex items-center justify-center shadow-glow-red-strong">
-          <span className="text-6xl">🏏</span>
+          <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" /><path d="M2 12h4M18 12h4M12 2v4M12 18v4" stroke="currentColor" strokeWidth="2" /></svg>
         </div>
         <h1 className="text-4xl font-display font-bold gradient-text">
           CricScore

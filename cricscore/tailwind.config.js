@@ -50,6 +50,7 @@ export default {
       borderRadius: {
         'card': '20px',
         'pill': '50px',
+        'button': '16px',
       },
       boxShadow: {
         'card': '0 4px 12px rgba(0, 0, 0, 0.15)',

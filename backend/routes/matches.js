@@ -225,6 +225,42 @@ router.get('/live/all', asyncHandler(async (req, res) => {
 }));
 
 /**
+ * GET /api/matches/completed
+ * Get all completed matches
+ */
+router.get('/completed/all', asyncHandler(async (req, res) => {
+  const matches = await Match.find({
+    status: 'completed'
+  }).sort({ updatedAt: -1 }).limit(50);
+
+  // Get both innings for each match
+  const matchesWithInnings = await Promise.all(
+    matches.map(async (match) => {
+      const innings = await Innings.find({
+        matchId: match.matchId
+      }).sort({ inningsNumber: 1 });
+
+      // Look up tournament name
+      const tournament = await Tournament.findOne({ tournamentId: match.tournamentId });
+
+      return {
+        ...match.toObject(),
+        scorerToken: undefined,
+        innings,
+        tournamentName: tournament?.name || null
+      };
+    })
+  );
+
+  res.json({
+    success: true,
+    data: {
+      matches: matchesWithInnings
+    }
+  });
+}));
+
+/**
  * PATCH /api/matches/:matchId/status
  * Update match status (start match, innings break, etc.)
  */

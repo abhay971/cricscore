@@ -102,7 +102,7 @@ const BoundaryAnimation = ({ runs = 4, batsman, onComplete }) => {
             transition={{ delay: 0.3 }}
             className="text-3xl md:text-5xl font-display font-bold text-neutral-white"
           >
-            {isSix ? '🚀 MAXIMUM!' : '🏏 FOUR!'}
+            {isSix ? 'MAXIMUM!' : 'FOUR!'}
           </motion.div>
 
           {/* Batsman name */}

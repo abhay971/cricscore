@@ -83,7 +83,7 @@ const LiveMatchesPage = () => {
 
           <div className="flex items-center gap-3 mb-2">
             <div className="w-12 h-12 bg-[#FF4B4B] rounded-full flex items-center justify-center animate-pulse">
-              <span className="text-2xl">🔴</span>
+              <span className="w-5 h-5 bg-white rounded-full"></span>
             </div>
             <div>
               <h1 className="text-3xl font-black text-white">Live Matches</h1>
@@ -108,7 +108,9 @@ const LiveMatchesPage = () => {
               className="bg-[#353647] border border-[#4A4B5E] rounded-[28px] p-10 text-center"
             >
               <div className="w-20 h-20 bg-[#FF4B4B]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-5xl">📺</span>
+                <svg className="w-10 h-10 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
+                </svg>
               </div>
               <h3 className="text-2xl font-bold text-white mb-2">No Live Matches</h3>
               <p className="text-white/60 mb-6 text-base">No matches are being played right now</p>

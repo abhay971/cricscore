@@ -125,7 +125,7 @@ const WicketCelebration = ({ dismissalType = 'bowled', batsman, onComplete }) =>
               }}
               transition={{ duration: 1, delay: 0.3 }}
             >
-              🏏
+              <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" /><path d="M2 12h4M18 12h4M12 2v4M12 18v4" stroke="currentColor" strokeWidth="2" /></svg>
             </motion.div>
           )}
         </motion.div>

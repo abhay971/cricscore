@@ -95,6 +95,10 @@ class ApiService {
     return this.request('/matches/live/all');
   }
 
+  async getCompletedMatches() {
+    return this.request('/matches/completed/all');
+  }
+
   async updateMatchStatus(matchId, status) {
     return this.request(`/matches/${matchId}/status`, {
       method: 'PATCH',

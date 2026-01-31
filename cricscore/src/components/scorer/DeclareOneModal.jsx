@@ -121,11 +121,21 @@ const DeclareOneModal = ({ isOpen, onClose, onSubmit }) => {
                 <span className="text-2xl font-bold text-[#8BC9E8]">{totalRuns}</span>
               </div>
               <div className="text-xs text-white/70 mt-2">
-                ⚡ Strike won't change (Declare 1 Rule)
+                <span className="inline-flex items-center gap-1">
+                  <svg className="w-3 h-3 text-[#F59E0B] inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  </svg>
+                  Strike won't change (Declare 1 Rule)
+                </span>
               </div>
               {(declareData.extraType === 'wide' || declareData.extraType === 'noball') && (
                 <div className="text-xs text-white/70 mt-1">
-                  🔄 Extra ball will be bowled
+                  <span className="inline-flex items-center gap-1">
+                    <svg className="w-3 h-3 text-white/70 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                    </svg>
+                    Extra ball will be bowled
+                  </span>
                 </div>
               )}
             </div>
