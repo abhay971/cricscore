@@ -1,0 +1,27 @@
+{
+  "name": "cricscore-backend",
+  "version": "1.0.0",
+  "description": "Backend server for CricScore - Local Tournament Scoring Platform",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js"
+  },
+  "keywords": ["cricket", "scoring", "websocket", "tournament"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.4",
+    "mongoose": "^8.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "dotenv": "^16.4.5",
+    "cors": "^2.8.5",
+    "bcrypt": "^5.1.1",
+    "express-rate-limit": "^7.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

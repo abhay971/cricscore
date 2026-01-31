@@ -1,0 +1,293 @@
+# CricScore - Project Context & Notes
+
+## Project Information
+**Project Name**: CricScore
+**Type**: Cricket Live Scoring Website for Local Tournaments
+**Inspiration**: CricHeroes-like functionality with Awwwwards-level design
+**Current Status**: Planning Phase
+**Project Location**: `/Users/abhay/Desktop/Personal/Cricscore/cricscore/`
+
+## User Requirements (Updated)
+
+### Scope - Local Tournament Focus
+- **Target Audience**: Local cricket tournaments with custom rules
+- **Variable Overs**: Support any number of overs (not restricted to T20/ODI/Test formats)
+- **Custom Rules**: Tournament organizers can set rules based on their preferences
+- **Authentication**:
+  - No authentication for viewers (public access)
+  - Single scorer access with protection mechanism
+- **Real-Time Features**: Score updates + commentary (no video streaming initially)
+
+### Design Requirements - CRITICAL
+- **Color Theme**: Black and red
+- **Design Quality**: **AWWWWARDS-LEVEL** website
+  - Premium, award-winning design quality
+  - Unique, creative animations throughout
+  - High attention to detail and polish
+- **User Experience**: **MOBILE APP FEEL**
+  - Should feel like a native mobile application, not a website
+  - Smooth, native-like interactions and transitions
+  - App-like navigation and gestures
+- **Primary Platform**: Mobile devices (mobile-first, mobile-optimized)
+- **Multi-user**: Multiple viewers watching same match in real-time
+
+### Custom Cricket Rules System
+
+#### 1. Variable Overs
+- Support any number of overs per match (5, 8, 10, 15, 20, etc.)
+- Tournament organizer decides format during match setup
+
+#### 2. Standard Cricket Rules
+- Follow all standard cricketing rules for:
+  - Score calculations
+  - Wicket types
+  - Extras (wides, no-balls, byes, leg-byes)
+  - Strike rate, economy rate, run rate calculations
+
+#### 3. "Declare 1 Run" Feature (UNIQUE)
+**This is a special local cricket variant rule:**
+
+- **Purpose**: Batsman strike does NOT change until over is completed
+- **How it works**:
+  - Can be "declare 1 run" only (just 1 run scored)
+  - Can be combined with extras:
+    - "Wide + declare 1"
+    - "No ball + declare 1"
+    - Any extra + 1 run
+- **Strike Change**: Batsman on strike remains on strike until over ends
+- **Use Case**: Common in local/street cricket formats
+
+**Example Scenario**:
+```
+Over 1:
+Ball 1: Batsman A scores "declare 1" → 1 run added, Batsman A stays on strike
+Ball 2: Batsman A scores 4 runs → Normal rules, Batsman A stays on strike
+Ball 3: Wide + declare 1 → 2 runs added (1 wide + 1 run), extra ball, Batsman A stays on strike
+Ball 4-6: Continue...
+Over ends → Now strike can change normally
+```
+
+## Current Tech Stack
+**Existing Setup**:
+- React 19.2.0
+- React DOM 19.2.0
+- Vite 7.2.4
+- ESLint configured
+
+**Tech Stack Decision**: PENDING - Will be specified by user
+
+## Key Design Considerations
+
+### Awwwwards-Level Design Requirements
+To achieve award-winning design quality:
+
+1. **Unique Animations**:
+   - Ball-by-ball scoring animations (ball flying, runs counting up)
+   - Wicket celebration animations
+   - Milestone animations (50s, 100s, boundaries)
+   - Page transition animations
+   - Micro-interactions (button presses, swipes)
+   - Real-time score update animations
+
+2. **Mobile App Feel**:
+   - Native-like gestures (swipe, pull-to-refresh)
+   - Smooth 60fps animations
+   - Haptic feedback (if device supports)
+   - App-like navigation (bottom nav, slide-in panels)
+   - Splash screen
+   - Loading states with branded animations
+   - PWA support (installable as app)
+
+3. **Visual Polish**:
+   - Premium typography
+   - Glassmorphism or modern design trends
+   - Gradient overlays
+   - Smooth shadows and depth
+   - Attention to spacing and hierarchy
+   - Custom icons and illustrations
+
+4. **Creative Elements**:
+   - Unique scoreboard design (not generic)
+   - Creative ball tracking visualization
+   - Animated commentary feed
+   - Dynamic backgrounds
+   - Interactive elements
+
+### Technical Implications for Design
+- **Animation Libraries**: Framer Motion, GSAP, or Lottie for complex animations
+- **Gesture Libraries**: React Spring, use-gesture for native-like interactions
+- **PWA Setup**: Service workers, manifest, app icons
+- **Performance**: Optimize for smooth 60fps on mobile devices
+- **CSS Techniques**: CSS Grid, Flexbox, CSS animations, transforms
+
+## Features List (Updated for Local Tournaments)
+
+### Must-Have (Core MVP)
+1. **Match Setup**:
+   - Team names and player lists
+   - Variable overs configuration
+   - Toss decision
+   - Custom rules toggle (e.g., "declare 1 run" enabled/disabled)
+
+2. **Live Scoring Interface** (Scorer):
+   - Ball-by-ball input: 0, 1, 2, 3, 4, 6 runs
+   - **"Declare 1" button** (when rule enabled)
+   - Wicket button with type selection
+   - Extras: Wide, No-ball, Bye, Leg-bye
+   - **Extras + Declare 1 combination**
+   - Strike rotation management (respect "declare 1 run" rule)
+   - Undo last ball
+
+3. **Scoreboard Display** (Viewers):
+   - Current score (runs/wickets in overs)
+   - Current batsmen stats with animated updates
+   - Current bowler stats with animated updates
+   - Recent balls visualization (last 6 balls with animations)
+   - Run rate (current + required if chasing)
+   - **Creative, unique scoreboard design**
+
+4. **Real-time Updates**:
+   - WebSocket-based live sync
+   - Animated score changes
+   - Commentary feed with smooth scroll
+
+5. **Mobile App Experience**:
+   - App-like navigation
+   - Smooth page transitions
+   - Native-like interactions
+   - Installable as PWA
+
+6. **Award-Winning Design**:
+   - Black and red theme with premium execution
+   - Unique animations throughout
+   - Micro-interactions
+   - Polish and attention to detail
+
+### Should-Have (Enhanced MVP)
+7. Partnership information
+8. Fall of wickets display
+9. Over-by-over summary
+10. Innings break screen (animated)
+11. Match result announcement (creative animation)
+12. Bowler/batsman change interface
+13. Player statistics during match
+
+### Future Features
+- Tournament bracket/schedule management
+- Multiple matches in same tournament
+- Player profiles and stats across matches
+- Match history and archive
+- Live chat for viewers
+- Push notifications for milestones
+- Social sharing with branded graphics
+
+## Decisions Made ✅
+
+### 1. "Declare 1 Run" Scorer Interface
+**Decision**: Modifier checkbox/toggle approach
+- Scorer checks "Declare 1" modifier checkbox
+- Then clicks run button (1, 2, 3, etc.) or extras button
+- Flexible for combining extras + declare 1
+- Modifier can auto-uncheck after each ball or stay checked
+
+### 2. Tournament Structure (Initial MVP)
+**Decision**: Basic tournament support
+- Multiple matches under one tournament
+- Simple match list view (no complex brackets/points tables)
+- Tournament organizer can create tournament and add matches
+- Future: Add advanced features like brackets, points tables
+
+### 3. Animation Preferences
+**Decision**: Mix of both bold and smooth
+- **Bold & celebratory** for key moments:
+  - Wickets (confetti, screen shake, dramatic animations)
+  - Boundaries (ball trajectory, 4s/6s celebrations)
+  - Milestones (50s, 100s with fanfare)
+- **Smooth & premium** for regular scoring:
+  - Run scoring (number count-up, subtle transitions)
+  - Strike changes (smooth highlight swap)
+  - Commentary updates (smooth slide-in)
+  - Page transitions (elegant fade/slide)
+
+### 4. PWA Features
+**Decision**: Full PWA with all features
+- Installable app (add to home screen)
+- Offline support with cached data
+- Custom app icon and splash screen
+- Service worker for background sync
+- True native app-like feel
+
+### 5. Custom Rules Beyond "Declare 1"
+**Decision**: Start with "Declare 1 Run" only for MVP
+- Keep architecture flexible for future custom rules
+- Focus on perfecting one custom rule first
+- Can add more local rules post-MVP based on user feedback
+
+### 6. Tech Stack (Recommended)
+**Decision**: Awaiting final confirmation, but recommended:
+- **Backend**: Node.js + Express + Socket.io
+- **Database**: MongoDB (flexible schema for cricket data)
+- **Animation**: Framer Motion (primary) + GSAP (for complex key moments)
+- **PWA**: Vite PWA plugin with Workbox
+- **State**: Zustand + React Query
+
+## Implementation Notes
+
+### Design-First Approach
+Given the Awwwwards-level design requirement:
+1. Create high-fidelity UI mockups before coding
+2. Design animation flow and interactions
+3. Build component library with animations
+4. Implement with performance in mind (60fps mobile)
+
+### Mobile App Development Strategy
+- Progressive Web App (PWA) for app-like feel
+- Consider React Native in future if native apps needed
+- Focus on performance and smooth interactions
+
+**Estimated Timeline**: TBD (depends on design complexity and animation work)
+
+## Implementation Summary
+
+### Comprehensive Plan Created
+A detailed implementation plan has been created at:
+`/Users/abhay/.claude/plans/synthetic-mixing-toast.md`
+
+**Plan includes**:
+- Complete architecture (3-tier with WebSocket)
+- Detailed data models (Tournament, Match, Ball with declare 1 support)
+- Component structure with 35+ components
+- Awwwwards-level design specifications
+- Animation guidelines (bold + smooth mix)
+- PWA setup details
+- 8-9 week implementation timeline (8 phases)
+- Comprehensive testing scenarios (30+ test cases)
+- Critical files to create (50+ files)
+
+### Key Highlights
+- **Unique Feature**: "Declare 1 Run" with modifier checkbox approach
+- **Design Quality**: Awwwwards-level with 60fps mobile animations
+- **PWA**: Full progressive web app with offline support
+- **Tournament**: Basic tournament management with multiple matches
+- **Mobile-First**: True mobile app feel with gestures and haptics
+
+### Estimated Timeline
+**8-9 weeks** for complete MVP with:
+- Foundation & design system (Week 1-2)
+- Tournament & match setup (Week 2-3)
+- Viewer UI with animations (Week 3-4)
+- Scorer interface with declare 1 (Week 4-5)
+- Commentary & match flow (Week 5-6)
+- PWA & mobile polish (Week 6-7)
+- Performance & optimization (Week 7-8)
+- Testing & deployment (Week 8-9)
+
+## Change Log
+- **2026-01-28**: Initial planning started
+- **2026-01-28**: Requirements updated - LOCAL TOURNAMENTS focus
+- **2026-01-28**: "Declare 1 Run" custom rule requirement added
+- **2026-01-28**: AWWWWARDS-LEVEL design requirement added
+- **2026-01-28**: MOBILE APP FEEL requirement emphasized
+- **2026-01-28**: Variable overs support requirement added
+- **2026-01-28**: User clarifications received (modifier approach, basic tournament, mixed animations, full PWA)
+- **2026-01-28**: Comprehensive implementation plan finalized
