@@ -38,7 +38,14 @@ const ViewerPage = () => {
   const handleScoreUpdate = useCallback(async (data) => {
     console.log('🏏 Score update received:', data);
     if (data.innings) setCurrentInnings(data.innings);
-    if (data.match) setMatch(data.match);
+    if (data.match) {
+      setMatch(data.match);
+      // Re-fetch full match data on status change so allInnings is up to date
+      if (data.match.status === 'innings_break' || data.match.status === 'completed') {
+        await fetchMatch(matchId);
+        return; // fetchMatch already sets everything
+      }
+    }
     // Refresh balls list on score update
     try {
       const response = await api.getMatchBalls(matchId);
@@ -46,7 +53,7 @@ const ViewerPage = () => {
     } catch (error) {
       console.error('Failed to fetch balls after score update:', error);
     }
-  }, [setCurrentInnings, setMatch, matchId, setRecentBalls]);
+  }, [setCurrentInnings, setMatch, matchId, setRecentBalls, fetchMatch]);
 
   const handleNewCommentary = useCallback((data) => {
     console.log('💬 New commentary received:', data);

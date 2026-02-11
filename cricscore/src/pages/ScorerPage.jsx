@@ -89,8 +89,16 @@ const ScorerPage = () => {
       }
     }
 
-    if (data.match) setMatch(data.match);
-  }, [setCurrentInnings, setMatch, matchId, setRecentBalls]);
+    if (data.match) {
+      setMatch(data.match);
+
+      // When status changes to innings_break or completed, re-fetch full match
+      // so allInnings has the latest scores for summary screens
+      if (data.match.status === 'innings_break' || data.match.status === 'completed') {
+        await fetchMatch(matchId);
+      }
+    }
+  }, [setCurrentInnings, setMatch, matchId, setRecentBalls, fetchMatch]);
 
   const handleNewBall = useCallback(async (ball) => {
     console.log('⚪ New ball received (scorer):', ball);
