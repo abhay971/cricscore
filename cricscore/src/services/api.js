@@ -184,6 +184,16 @@ class ApiService {
     });
   }
 
+  async startSuperOver(matchId, token) {
+    return this.request('/scorer/superover/start', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ matchId })
+    });
+  }
+
   async endMatch(matchId, winner, result, token) {
     return this.request('/scorer/match/end', {
       method: 'POST',

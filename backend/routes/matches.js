@@ -198,7 +198,7 @@ router.get('/:matchId/balls', asyncHandler(async (req, res) => {
  */
 router.get('/live/all', asyncHandler(async (req, res) => {
   const matches = await Match.find({
-    status: { $in: ['live', 'innings_break'] }
+    status: { $in: ['live', 'innings_break', 'super_over', 'super_over_break'] }
   }).sort({ updatedAt: -1 });
 
   // Get current innings for each match
@@ -274,7 +274,7 @@ router.patch('/:matchId/status', asyncHandler(async (req, res) => {
     throw new ApiError(404, 'Match not found', 'MATCH_NOT_FOUND');
   }
 
-  const validStatuses = ['not_started', 'live', 'innings_break', 'completed'];
+  const validStatuses = ['not_started', 'live', 'innings_break', 'completed', 'super_over', 'super_over_break'];
   if (!validStatuses.includes(status)) {
     throw new ApiError(400, 'Invalid status', 'INVALID_STATUS');
   }

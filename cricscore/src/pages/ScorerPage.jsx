@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { Scoreboard, RecentBalls, InningsBreak, MatchComplete } from '../components/viewer';
+import { Scoreboard, RecentBalls, InningsBreak, MatchComplete, SuperOverBreak } from '../components/viewer';
 import { BallInput, PlayerSelector, ScorerActions, WicketModal, ExtrasModal, DeclareOneModal } from '../components/scorer';
 import { useMatchStore, useAuthStore } from '../store';
 import { useWebSocketScorer } from '../hooks/useWebSocket';
@@ -92,9 +92,9 @@ const ScorerPage = () => {
     if (data.match) {
       setMatch(data.match);
 
-      // When status changes to innings_break or completed, re-fetch full match
+      // When status changes to break/completed/super_over, re-fetch full match
       // so allInnings has the latest scores for summary screens
-      if (data.match.status === 'innings_break' || data.match.status === 'completed') {
+      if (['innings_break', 'completed', 'super_over', 'super_over_break'].includes(data.match.status)) {
         await fetchMatch(matchId);
       }
     }
@@ -610,14 +610,79 @@ const ScorerPage = () => {
 
       toast.success('2nd innings started');
 
-      // Clear 1st innings balls and refresh match data
+      // Clear 1st innings balls, player selections, and refresh match data
       setRecentBalls([]);
+      setSelectedStriker(null);
+      setSelectedNonStriker(null);
+      setSelectedBowler(null);
+      previousBallsRef.current = 0;
       await fetchMatch(matchId);
     } catch (error) {
       console.error('❌ Failed to start next innings:', error);
       toast.error('Failed to start next innings');
     }
   };
+
+  // Handle Start Super Over
+  const handleStartSuperOver = async () => {
+    try {
+      await api.startSuperOver(matchId, token);
+      toast.success('Super Over started!');
+      setRecentBalls([]);
+      setSelectedStriker(null);
+      setSelectedNonStriker(null);
+      setSelectedBowler(null);
+      previousBallsRef.current = 0;
+      await fetchMatch(matchId);
+    } catch (error) {
+      console.error('Failed to start Super Over:', error);
+      toast.error('Failed to start Super Over');
+    }
+  };
+
+  // Handle Start SO 2nd innings (from super_over_break)
+  const handleStartSONextInnings = async () => {
+    try {
+      await api.startInnings(matchId, token);
+      toast.success('SO 2nd innings started!');
+      setRecentBalls([]);
+      setSelectedStriker(null);
+      setSelectedNonStriker(null);
+      setSelectedBowler(null);
+      previousBallsRef.current = 0;
+      await fetchMatch(matchId);
+    } catch (error) {
+      console.error('Failed to start SO next innings:', error);
+      toast.error('Failed to start next innings');
+    }
+  };
+
+  // Show Super Over screen (match tied, SO pending)
+  if (match?.status === 'super_over') {
+    const inn1 = allInnings?.find(i => i.inningsNumber === 1);
+    const inn2 = allInnings?.find(i => i.inningsNumber === 2);
+    return (
+      <SuperOverBreak
+        match={match}
+        innings1={inn1}
+        innings2={inn2}
+        onStartSuperOver={handleStartSuperOver}
+      />
+    );
+  }
+
+  // Show SO innings break (between SO innings 3 and 4)
+  if (match?.status === 'super_over_break') {
+    const soFirstInnings = allInnings?.find(i => i.inningsNumber === 3);
+    return (
+      <InningsBreak
+        match={match}
+        innings={soFirstInnings}
+        onStartNextInnings={handleStartSONextInnings}
+        isSuperOver={true}
+      />
+    );
+  }
 
   // Show Innings Break screen - pass 1st innings data (not the empty 2nd innings)
   if (match?.status === 'innings_break') {
@@ -637,8 +702,7 @@ const ScorerPage = () => {
     return (
       <MatchComplete
         match={match}
-        innings1={allInnings?.[0] || currentInnings}
-        innings2={allInnings?.[1]}
+        allInnings={allInnings?.length ? allInnings : [currentInnings]}
       />
     );
   }
@@ -691,6 +755,23 @@ const ScorerPage = () => {
               </div>
             </div>
           )}
+
+          {/* SO 1st Innings Summary (shown during SO 2nd innings) */}
+          {match?.currentInnings === 4 && (() => {
+            const soInn3 = allInnings?.find(i => i.inningsNumber === 3);
+            return soInn3 ? (
+              <div className="bg-[#353647] border border-amber-500/30 rounded-[24px] p-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="bg-amber-500 text-[#2C2D3F] text-[10px] font-bold px-2 py-0.5 rounded-full">SO</span>
+                  <span className="text-white/70 text-sm">{soInn3.battingTeam}</span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-white font-bold text-lg">{soInn3.totalRuns}/{soInn3.totalWickets}</span>
+                  <span className="text-white/50 text-xs">({soInn3.totalOvers} ov)</span>
+                </div>
+              </div>
+            ) : null;
+          })()}
 
           {/* Scoreboard */}
           <Scoreboard match={match} innings={currentInnings} />

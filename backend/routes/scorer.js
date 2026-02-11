@@ -249,9 +249,10 @@ router.post('/ball', scorerLimiter, asyncHandler(async (req, res) => {
   // Calculate run rates
   innings.runRate = calculateRunRate(innings.totalRuns, innings.balls);
 
-  // Calculate required run rate for second innings
-  if (match.currentInnings === 2 && innings.target) {
-    const ballsRemaining = (match.overs * 6) - innings.balls;
+  // Calculate required run rate for chasing innings (2nd or SO 2nd)
+  if ((match.currentInnings === 2 || match.currentInnings === 4) && innings.target) {
+    const effectiveMaxOvers = innings.isSuperOver ? 1 : match.overs;
+    const ballsRemaining = (effectiveMaxOvers * 6) - innings.balls;
     innings.requiredRunRate = calculateRequiredRunRate(innings.target, innings.totalRuns, ballsRemaining);
   }
 
@@ -260,25 +261,30 @@ router.post('/ball', scorerLimiter, asyncHandler(async (req, res) => {
   const battingTeamData = isTeam1Batting ? match.team1 : match.team2;
   const totalPlayers = battingTeamData.players.length;
 
+  // For Super Over innings: 1 over max, 3 players (2 wickets max)
+  const effectiveMaxOvers = innings.isSuperOver ? 1 : match.overs;
+  const effectiveTotalPlayers = innings.isSuperOver ? 3 : totalPlayers;
+
   // Check if innings should end
   console.log('🔍 Checking if innings should end:', {
     totalWickets: innings.totalWickets,
     balls: innings.balls,
-    maxOvers: match.overs,
-    totalBallsAllowed: match.overs * 6,
+    maxOvers: effectiveMaxOvers,
+    totalBallsAllowed: effectiveMaxOvers * 6,
     target: innings.target,
     totalRuns: innings.totalRuns,
-    totalPlayers,
-    maxWickets: totalPlayers - 1
+    totalPlayers: effectiveTotalPlayers,
+    maxWickets: effectiveTotalPlayers - 1,
+    isSuperOver: innings.isSuperOver
   });
 
   const shouldEnd = shouldInningsEnd(
     innings.totalWickets,
     innings.balls,
-    match.overs,
+    effectiveMaxOvers,
     innings.target,
     innings.totalRuns,
-    totalPlayers
+    effectiveTotalPlayers
   );
 
   console.log('🏁 Should innings end?', shouldEnd);
@@ -319,17 +325,14 @@ router.post('/ball', scorerLimiter, asyncHandler(async (req, res) => {
         inningsNumber: 1,
         innings: innings.toObject()
       });
-    } else {
-      // Match completed
-      match.status = 'completed';
+    } else if (match.currentInnings === 2) {
+      // 2nd innings completed — determine winner or trigger Super Over
 
-      // Determine winner
       const firstInnings = await Innings.findOne({
         matchId: match.matchId,
         inningsNumber: 1
       });
 
-      // Resolve team names (handle "team1"/"team2" identifiers from old data)
       const resolveTeamName = (name) => {
         if (name === 'team1') return match.team1.name;
         if (name === 'team2') return match.team2.name;
@@ -341,17 +344,84 @@ router.post('/ball', scorerLimiter, asyncHandler(async (req, res) => {
         const winnerName = resolveTeamName(innings.battingTeam);
         match.winner = winnerName;
         match.result = `${winnerName} won by ${wicketsRemaining} wicket${wicketsRemaining !== 1 ? 's' : ''}`;
+        match.status = 'completed';
+
+        broadcastMatchEnd(io, match.matchId, {
+          winner: match.winner,
+          result: match.result,
+          match: match.toObject()
+        });
       } else if (innings.totalRuns < firstInnings.totalRuns) {
         const runsDifference = firstInnings.totalRuns - innings.totalRuns;
         const winnerName = resolveTeamName(firstInnings.battingTeam);
         match.winner = winnerName;
         match.result = `${winnerName} won by ${runsDifference} run${runsDifference !== 1 ? 's' : ''}`;
+        match.status = 'completed';
+
+        broadcastMatchEnd(io, match.matchId, {
+          winner: match.winner,
+          result: match.result,
+          match: match.toObject()
+        });
+      } else {
+        // TIE — trigger Super Over
+        match.isSuperOver = true;
+        match.status = 'super_over';
+
+        broadcastInningsEnd(io, match.matchId, {
+          inningsNumber: 2,
+          innings: innings.toObject(),
+          superOver: true
+        });
+      }
+    } else if (match.currentInnings === 3) {
+      // Super Over 1st innings completed — create SO 2nd innings
+      const soSecondInnings = new Innings({
+        matchId: match.matchId,
+        inningsNumber: 4,
+        isSuperOver: true,
+        battingTeam: innings.bowlingTeam,
+        bowlingTeam: innings.battingTeam,
+        target: innings.totalRuns + 1,
+        status: 'not_started'
+      });
+      await soSecondInnings.save();
+
+      match.currentInnings = 4;
+      match.status = 'super_over_break';
+
+      broadcastInningsEnd(io, match.matchId, {
+        inningsNumber: 3,
+        innings: innings.toObject()
+      });
+    } else if (match.currentInnings === 4) {
+      // Super Over 2nd innings completed — determine SO winner
+      match.status = 'completed';
+
+      const soFirstInnings = await Innings.findOne({
+        matchId: match.matchId,
+        inningsNumber: 3
+      });
+
+      const resolveTeamName = (name) => {
+        if (name === 'team1') return match.team1.name;
+        if (name === 'team2') return match.team2.name;
+        return name;
+      };
+
+      if (innings.totalRuns > soFirstInnings.totalRuns) {
+        const winnerName = resolveTeamName(innings.battingTeam);
+        match.winner = winnerName;
+        match.result = `${winnerName} won in Super Over`;
+      } else if (innings.totalRuns < soFirstInnings.totalRuns) {
+        const winnerName = resolveTeamName(soFirstInnings.battingTeam);
+        match.winner = winnerName;
+        match.result = `${winnerName} won in Super Over`;
       } else {
         match.winner = 'Tie';
-        match.result = 'Match tied';
+        match.result = 'Match tied (Super Over tied)';
       }
 
-      // Broadcast match end
       broadcastMatchEnd(io, match.matchId, {
         winner: match.winner,
         result: match.result,
@@ -475,8 +545,9 @@ router.delete('/ball/undo', asyncHandler(async (req, res) => {
 
   // Recalculate run rates
   innings.runRate = calculateRunRate(innings.totalRuns, innings.balls);
-  if (match.currentInnings === 2 && innings.target) {
-    const ballsRemaining = (match.overs * 6) - innings.balls;
+  if ((match.currentInnings === 2 || match.currentInnings === 4) && innings.target) {
+    const effectiveMaxOvers = innings.isSuperOver ? 1 : match.overs;
+    const ballsRemaining = (effectiveMaxOvers * 6) - innings.balls;
     innings.requiredRunRate = calculateRequiredRunRate(innings.target, innings.totalRuns, ballsRemaining);
   }
 
@@ -561,12 +632,58 @@ router.post('/innings/end', asyncHandler(async (req, res) => {
 router.post('/innings/start', asyncHandler(async (req, res) => {
   const match = req.match;
 
-  // Can only start innings if we're at innings break
-  if (match.status !== 'innings_break') {
-    throw new ApiError(400, 'Match is not at innings break', 'INVALID_STATUS');
+  // Can start innings from innings_break or super_over_break
+  if (match.status !== 'innings_break' && match.status !== 'super_over_break') {
+    throw new ApiError(400, 'Match is not at an innings break', 'INVALID_STATUS');
   }
 
-  // Get the 2nd innings
+  // Find the next innings dynamically by current match innings number
+  const nextInnings = await Innings.findOne({
+    matchId: match.matchId,
+    inningsNumber: match.currentInnings
+  });
+
+  if (!nextInnings) {
+    throw new ApiError(404, 'Next innings not found', 'INNINGS_NOT_FOUND');
+  }
+
+  // Start the next innings
+  nextInnings.status = 'in_progress';
+  await nextInnings.save();
+
+  // Update match status
+  match.status = 'live';
+  await match.save();
+
+  // Broadcast innings start
+  io.to(match.matchId).emit('innings:start', {
+    inningsNumber: match.currentInnings,
+    match: match.toObject(),
+    innings: nextInnings.toObject()
+  });
+
+  res.json({
+    success: true,
+    data: {
+      match,
+      innings: nextInnings
+    },
+    message: `Innings ${match.currentInnings} started successfully`
+  });
+}));
+
+/**
+ * POST /api/scorer/superover/start
+ * Start Super Over (creates SO innings 3)
+ */
+router.post('/superover/start', asyncHandler(async (req, res) => {
+  const match = req.match;
+
+  if (match.status !== 'super_over') {
+    throw new ApiError(400, 'Match is not in super over state', 'INVALID_STATUS');
+  }
+
+  // Per cricket rules: team that batted 2nd in main match bats first in SO
   const secondInnings = await Innings.findOne({
     matchId: match.matchId,
     inningsNumber: 2
@@ -576,28 +693,35 @@ router.post('/innings/start', asyncHandler(async (req, res) => {
     throw new ApiError(404, '2nd innings not found', 'INNINGS_NOT_FOUND');
   }
 
-  // Start the 2nd innings
-  secondInnings.status = 'in_progress';
-  await secondInnings.save();
+  // Create SO 1st innings (innings 3)
+  const soFirstInnings = new Innings({
+    matchId: match.matchId,
+    inningsNumber: 3,
+    isSuperOver: true,
+    battingTeam: secondInnings.battingTeam,
+    bowlingTeam: secondInnings.bowlingTeam,
+    status: 'not_started'
+  });
+  await soFirstInnings.save();
 
-  // Update match status
+  match.currentInnings = 3;
   match.status = 'live';
   await match.save();
 
-  // Broadcast innings start
   io.to(match.matchId).emit('innings:start', {
-    inningsNumber: 2,
+    inningsNumber: 3,
     match: match.toObject(),
-    innings: secondInnings.toObject()
+    innings: soFirstInnings.toObject(),
+    superOver: true
   });
 
   res.json({
     success: true,
     data: {
       match,
-      innings: secondInnings
+      innings: soFirstInnings
     },
-    message: '2nd innings started successfully'
+    message: 'Super Over started'
   });
 }));
 

@@ -73,13 +73,17 @@ const matchSchema = new mongoose.Schema({
   },
   currentInnings: {
     type: Number,
-    enum: [1, 2],
+    enum: [1, 2, 3, 4],
     default: 1
   },
   status: {
     type: String,
-    enum: ['not_started', 'live', 'innings_break', 'completed'],
+    enum: ['not_started', 'live', 'innings_break', 'completed', 'super_over', 'super_over_break'],
     default: 'not_started'
+  },
+  isSuperOver: {
+    type: Boolean,
+    default: false
   },
   result: {
     type: String,

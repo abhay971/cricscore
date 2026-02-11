@@ -5,3 +5,4 @@ export { default as CurrentBowler } from './CurrentBowler';
 export { default as Commentary } from './Commentary';
 export { default as InningsBreak } from './InningsBreak';
 export { default as MatchComplete } from './MatchComplete';
+export { default as SuperOverBreak } from './SuperOverBreak';

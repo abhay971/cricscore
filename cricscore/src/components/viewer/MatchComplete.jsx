@@ -6,7 +6,11 @@ import { useMemo } from 'react';
  * Match Complete Component
  * Cricbuzz-style scorecards with full batting & bowling tables
  */
-const MatchComplete = ({ match, innings1, innings2 }) => {
+const MatchComplete = ({ match, allInnings }) => {
+  const innings1 = allInnings?.[0];
+  const innings2 = allInnings?.[1];
+  const innings3 = allInnings?.[2]; // SO innings 1
+  const innings4 = allInnings?.[3]; // SO innings 2
   const navigate = useNavigate();
 
   // Resolve team names using toss data (handles corrupted old data)
@@ -27,39 +31,51 @@ const MatchComplete = ({ match, innings1, innings2 }) => {
   // Auto-calculate Player of the Match
   const playerOfMatch = useMemo(() => {
     const candidates = [];
-    const inningsTeamNames = [team1Name, team2Name];
+    const allInn = [innings1, innings2, innings3, innings4].filter(Boolean);
 
-    [innings1, innings2].forEach((inn, idx) => {
+    allInn.forEach((inn) => {
       if (!inn?.currentBatsmen) return;
+      const battingTeamName = inn.battingTeam === match?.team1?.name ? team1Name : team2Name;
       inn.currentBatsmen.forEach((b) => {
-        candidates.push({
-          name: b.name,
-          team: inningsTeamNames[idx],
-          runs: b.runs || 0,
-          balls: b.balls || 0,
-          fours: b.fours || 0,
-          sixes: b.sixes || 0,
-          strikeRate: b.balls > 0 ? ((b.runs / b.balls) * 100).toFixed(1) : '0.0',
-          score: (b.runs || 0) + (b.fours || 0) * 2 + (b.sixes || 0) * 4
-        });
+        const existing = candidates.find(c => c.name?.trim().toLowerCase() === b.name?.trim().toLowerCase());
+        const batScore = (b.runs || 0) + (b.fours || 0) * 2 + (b.sixes || 0) * 4;
+        if (existing) {
+          existing.runs += (b.runs || 0);
+          existing.balls += (b.balls || 0);
+          existing.fours += (b.fours || 0);
+          existing.sixes += (b.sixes || 0);
+          existing.score += batScore;
+        } else {
+          candidates.push({
+            name: b.name,
+            team: battingTeamName,
+            runs: b.runs || 0,
+            balls: b.balls || 0,
+            fours: b.fours || 0,
+            sixes: b.sixes || 0,
+            strikeRate: b.balls > 0 ? ((b.runs / b.balls) * 100).toFixed(1) : '0.0',
+            score: batScore
+          });
+        }
       });
     });
 
     // Also consider bowling performances
-    [innings1, innings2].forEach((inn, idx) => {
+    allInn.forEach((inn) => {
       if (!inn?.bowlers) return;
+      const bowlingTeamName = inn.bowlingTeam === match?.team1?.name ? team1Name : team2Name;
       inn.bowlers.forEach((b) => {
-        // Find existing candidate or create new
         const existing = candidates.find(c => c.name?.trim().toLowerCase() === b.name?.trim().toLowerCase());
         const bowlScore = (b.wickets || 0) * 25 - (b.economy || 0) * 2;
         if (existing) {
           existing.score += bowlScore;
-          existing.wickets = b.wickets || 0;
-          existing.bowlingFigures = `${b.wickets || 0}/${b.runs || 0}`;
+          existing.wickets = (existing.wickets || 0) + (b.wickets || 0);
+          existing.bowlingFigures = `${existing.wickets}/${(existing.bowlingRuns || 0) + (b.runs || 0)}`;
+          existing.bowlingRuns = (existing.bowlingRuns || 0) + (b.runs || 0);
         } else {
           candidates.push({
             name: b.name,
-            team: inningsTeamNames[idx === 0 ? 1 : 0], // bowlers are from the other team
+            team: bowlingTeamName,
             runs: 0,
             balls: 0,
             fours: 0,
@@ -67,6 +83,7 @@ const MatchComplete = ({ match, innings1, innings2 }) => {
             strikeRate: '0.0',
             wickets: b.wickets || 0,
             bowlingFigures: `${b.wickets || 0}/${b.runs || 0}`,
+            bowlingRuns: b.runs || 0,
             score: bowlScore
           });
         }
@@ -76,11 +93,11 @@ const MatchComplete = ({ match, innings1, innings2 }) => {
     if (candidates.length === 0) return null;
     candidates.sort((a, b) => b.score - a.score);
     return candidates[0];
-  }, [innings1, innings2, team1Name, team2Name]);
+  }, [innings1, innings2, innings3, innings4, team1Name, team2Name, match]);
 
   const getWinnerInfo = () => {
     if (!match?.winner || match.winner === 'Tie') {
-      return { text: 'Match Tied!', subtitle: 'What a contest!' };
+      return { text: 'Match Tied!', subtitle: match?.result || 'What a contest!' };
     }
     const winnerName = resolveName(match.winner);
     let resultText = match.result || `${winnerName} won!`;
@@ -388,6 +405,32 @@ const MatchComplete = ({ match, innings1, innings2 }) => {
 
         {/* ── 2nd Innings Bowling Scorecard ── */}
         <BowlingCard innings={innings2} teamName={team1Name} delay={0.95} />
+
+        {/* ── Super Over Scorecards ── */}
+        {match?.isSuperOver && innings3 && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.0 }}
+              className="flex items-center gap-3 py-2"
+            >
+              <div className="flex-1 h-px bg-amber-500/30" />
+              <span className="bg-amber-500 text-[#2C2D3F] text-xs font-bold px-4 py-1.5 rounded-full">SUPER OVER</span>
+              <div className="flex-1 h-px bg-amber-500/30" />
+            </motion.div>
+
+            <BattingCard innings={innings3} teamName={innings3?.battingTeam || team2Name} inningsLabel="SO 1ST BATTING" delay={1.05} />
+            <BowlingCard innings={innings3} teamName={innings3?.bowlingTeam || team1Name} delay={1.1} />
+
+            {innings4 && (
+              <>
+                <BattingCard innings={innings4} teamName={innings4?.battingTeam || team1Name} inningsLabel="SO 2ND BATTING" delay={1.15} />
+                <BowlingCard innings={innings4} teamName={innings4?.bowlingTeam || team2Name} delay={1.2} />
+              </>
+            )}
+          </>
+        )}
 
         {/* Player of the Match */}
         {playerOfMatch && (

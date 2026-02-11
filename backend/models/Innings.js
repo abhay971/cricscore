@@ -41,7 +41,11 @@ const inningsSchema = new mongoose.Schema({
   inningsNumber: {
     type: Number,
     required: true,
-    enum: [1, 2]
+    enum: [1, 2, 3, 4]
+  },
+  isSuperOver: {
+    type: Boolean,
+    default: false
   },
   battingTeam: {
     type: String,

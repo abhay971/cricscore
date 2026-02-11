@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Scoreboard, RecentBalls, Commentary, InningsBreak, MatchComplete } from '../components/viewer';
+import { Scoreboard, RecentBalls, Commentary, InningsBreak, MatchComplete, SuperOverBreak } from '../components/viewer';
 import { useMatchStore } from '../store';
 import useWebSocket from '../hooks/useWebSocket';
 import api from '../services/api';
@@ -41,7 +41,7 @@ const ViewerPage = () => {
     if (data.match) {
       setMatch(data.match);
       // Re-fetch full match data on status change so allInnings is up to date
-      if (data.match.status === 'innings_break' || data.match.status === 'completed') {
+      if (['innings_break', 'completed', 'super_over', 'super_over_break'].includes(data.match.status)) {
         await fetchMatch(matchId);
         return; // fetchMatch already sets everything
       }
@@ -106,6 +106,31 @@ const ViewerPage = () => {
     );
   }
 
+  // Show Super Over screen (match tied, SO pending)
+  if (match?.status === 'super_over') {
+    const inn1 = allInnings?.find(i => i.inningsNumber === 1);
+    const inn2 = allInnings?.find(i => i.inningsNumber === 2);
+    return (
+      <SuperOverBreak
+        match={match}
+        innings1={inn1}
+        innings2={inn2}
+      />
+    );
+  }
+
+  // Show SO innings break (between SO innings 3 and 4)
+  if (match?.status === 'super_over_break') {
+    const soFirstInnings = allInnings?.find(i => i.inningsNumber === 3);
+    return (
+      <InningsBreak
+        match={match}
+        innings={soFirstInnings}
+        isSuperOver={true}
+      />
+    );
+  }
+
   // Show Innings Break screen
   if (match?.status === 'innings_break') {
     const firstInnings = allInnings?.[0] || currentInnings;
@@ -113,9 +138,6 @@ const ViewerPage = () => {
       <InningsBreak
         match={match}
         innings={firstInnings}
-        onStartNextInnings={() => {
-          // Viewer-only: no action (scorer starts innings)
-        }}
       />
     );
   }
@@ -125,8 +147,7 @@ const ViewerPage = () => {
     return (
       <MatchComplete
         match={match}
-        innings1={allInnings?.[0] || currentInnings}
-        innings2={allInnings?.[1]}
+        allInnings={allInnings?.length ? allInnings : [currentInnings]}
       />
     );
   }

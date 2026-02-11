@@ -10,7 +10,7 @@ const Scoreboard = memo(({ match, innings }) => {
   const score = innings?.totalRuns || 0;
   const wickets = innings?.totalWickets || 0;
   const overs = innings?.totalOvers || 0.0;
-  const maxOvers = match?.overs || 20;
+  const maxOvers = innings?.isSuperOver ? 1 : (match?.overs || 20);
   const currentRunRate = innings?.runRate || 0.00;
   const requiredRunRate = innings?.requiredRunRate || 0.00;
 
@@ -20,14 +20,9 @@ const Scoreboard = memo(({ match, innings }) => {
     if (name === 'team2') return match?.team2?.name || name;
     return name;
   };
-  const tossWinnerName = resolveName(match?.tossWinner);
-  const firstBatting = match?.tossDecision === 'bat'
-    ? tossWinnerName
-    : (tossWinnerName === match?.team1?.name ? match?.team2?.name : match?.team1?.name);
-  const secondBatting = firstBatting === match?.team1?.name ? match?.team2?.name : match?.team1?.name;
-  const isFirstInnings = match?.currentInnings === 1;
-  const battingTeam = isFirstInnings ? firstBatting : secondBatting;
-  const bowlingTeam = isFirstInnings ? secondBatting : firstBatting;
+  // Use innings data directly for team names (handles SO innings correctly)
+  const battingTeam = resolveName(innings?.battingTeam) || match?.team1?.name;
+  const bowlingTeam = resolveName(innings?.bowlingTeam) || match?.team2?.name;
 
   // Extras
   const extras = innings?.extras || {};
@@ -55,13 +50,18 @@ const Scoreboard = memo(({ match, innings }) => {
 
   return (
     <div className="space-y-3">
-      {/* Live Badge */}
+      {/* Live Badge + Super Over Badge */}
       {match?.status === 'live' && (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center gap-2">
           <span className="bg-accent-red text-white text-xs font-bold px-4 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
             <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
             LIVE
           </span>
+          {match?.isSuperOver && (
+            <span className="bg-amber-500 text-[#2C2D3F] text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
+              SUPER OVER
+            </span>
+          )}
         </div>
       )}
 
@@ -81,7 +81,11 @@ const Scoreboard = memo(({ match, innings }) => {
             </div>
             <div>
               <h3 className="text-white font-bold text-lg">{battingTeam || 'Team A'}</h3>
-              <p className="text-white/60 text-xs">{innings?.inningsNumber === 1 ? '1st' : '2nd'} Innings</p>
+              <p className="text-white/60 text-xs">
+                {innings?.isSuperOver
+                  ? `Super Over - ${innings?.inningsNumber === 3 ? '1st' : '2nd'}`
+                  : `${innings?.inningsNumber === 1 ? '1st' : '2nd'} Innings`}
+              </p>
             </div>
           </div>
         </div>
@@ -109,8 +113,8 @@ const Scoreboard = memo(({ match, innings }) => {
           </div>
         </div>
 
-        {/* Target Info (2nd innings) */}
-        {innings?.inningsNumber === 2 && innings?.target > 0 && (
+        {/* Target Info (chasing innings: 2nd or SO 2nd) */}
+        {(innings?.inningsNumber === 2 || innings?.inningsNumber === 4) && innings?.target > 0 && innings.target > score && (
           <div className="mt-3 pt-3 border-t border-white/20">
             <p className="text-white/80 text-sm">
               Need <span className="font-bold text-white">{innings.target - score}</span> runs from{' '}
