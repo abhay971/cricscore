@@ -4,23 +4,30 @@ import { motion } from 'framer-motion';
  * Recent Balls Component - Modern Design
  * Clean balls display with current over info
  */
-const RecentBalls = ({ balls = [], partnership = { runs: 0, balls: 0 } }) => {
+const RecentBalls = ({ balls = [], partnership = { runs: 0, balls: 0 }, currentInningsNumber }) => {
   // Get balls from current over only by checking over number
   let currentOverBalls = [];
 
   if (balls.length > 0) {
-    // Get the over number from the most recent ball
-    const latestBall = balls[balls.length - 1];
-    const currentOverNumber = latestBall.overNumber;
+    // Filter to current innings first (prevents 1st innings balls leaking into 2nd)
+    const inningsBalls = currentInningsNumber
+      ? balls.filter(b => b.inningsNumber === currentInningsNumber)
+      : balls;
 
-    // Collect all balls from the current over (same over number)
-    for (let i = balls.length - 1; i >= 0; i--) {
-      const ball = balls[i];
-      if (ball.overNumber === currentOverNumber) {
-        currentOverBalls.unshift(ball);
-      } else {
-        // Different over number, stop collecting
-        break;
+    if (inningsBalls.length > 0) {
+      // Get the over number from the most recent ball
+      const latestBall = inningsBalls[inningsBalls.length - 1];
+      const currentOverNumber = latestBall.overNumber;
+
+      // Collect all balls from the current over (same over number)
+      for (let i = inningsBalls.length - 1; i >= 0; i--) {
+        const ball = inningsBalls[i];
+        if (ball.overNumber === currentOverNumber) {
+          currentOverBalls.unshift(ball);
+        } else {
+          // Different over number, stop collecting
+          break;
+        }
       }
     }
   }

@@ -99,13 +99,13 @@ const ViewerPage = () => {
 
   // Show Innings Break screen
   if (match?.status === 'innings_break') {
+    const firstInnings = allInnings?.[0] || currentInnings;
     return (
       <InningsBreak
         match={match}
-        innings={currentInnings}
+        innings={firstInnings}
         onStartNextInnings={() => {
-          // This would typically be scorer-only action
-          console.log('Start next innings');
+          // Viewer-only: no action (scorer starts innings)
         }}
       />
     );
@@ -169,7 +169,7 @@ const ViewerPage = () => {
           <Scoreboard match={match} innings={currentInnings} />
 
           {/* Recent balls */}
-          <RecentBalls balls={recentBalls} />
+          <RecentBalls balls={recentBalls} currentInningsNumber={match?.currentInnings} />
 
           {/* Fall of Wickets */}
           <FallOfWickets balls={recentBalls} currentInningsNumber={match?.currentInnings} />

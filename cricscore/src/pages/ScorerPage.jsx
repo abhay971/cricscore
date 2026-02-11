@@ -601,19 +601,18 @@ const ScorerPage = () => {
 
       toast.success('2nd innings started');
 
-      // Refresh match data
-      console.log('🔄 Fetching updated match data...');
-      await fetchMatch();
-      console.log('✅ Match data refreshed');
+      // Clear 1st innings balls and refresh match data
+      setRecentBalls([]);
+      await fetchMatch(matchId);
     } catch (error) {
       console.error('❌ Failed to start next innings:', error);
       toast.error('Failed to start next innings');
     }
   };
 
-  // Show Innings Break screen
+  // Show Innings Break screen - pass 1st innings data (not the empty 2nd innings)
   if (match?.status === 'innings_break') {
-    const firstInnings = allInnings?.[0] || currentInnings;
+    const firstInnings = allInnings?.find(i => i.inningsNumber === 1) || allInnings?.[0] || currentInnings;
 
     return (
       <InningsBreak
@@ -678,6 +677,7 @@ const ScorerPage = () => {
           <RecentBalls
             balls={recentBalls}
             partnership={currentInnings?.partnership || { runs: 0, balls: 0 }}
+            currentInningsNumber={match?.currentInnings}
           />
 
           {/* Player selectors */}
