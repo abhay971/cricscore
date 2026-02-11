@@ -4,7 +4,8 @@ import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { apiLimiter } from './middleware/rateLimiter.js';
+// Rate limiters are still available for specific routes (match creation, scorer login, etc.)
+// import { apiLimiter } from './middleware/rateLimiter.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 // Load environment variables
@@ -28,8 +29,8 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiting
-app.use('/api/', apiLimiter);
+// Rate limiting disabled - many concurrent viewers expected
+// app.use('/api/', apiLimiter);
 
 // MongoDB Connection
 const connectDB = async () => {

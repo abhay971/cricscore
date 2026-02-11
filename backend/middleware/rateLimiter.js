@@ -9,7 +9,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: isDevelopment ? 500 : 100, // More lenient in development
+  max: 0, // Disabled - no rate limit
   message: {
     error: {
       message: 'Too many requests, please try again later',

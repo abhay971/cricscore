@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Scoreboard, RecentBalls, InningsBreak, MatchComplete } from '../components/viewer';
 import { BallInput, PlayerSelector, ScorerActions, WicketModal, ExtrasModal, DeclareOneModal } from '../components/scorer';
@@ -14,6 +14,7 @@ import toast from '../utils/toast.jsx';
  */
 const ScorerPage = () => {
   const { matchId } = useParams();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const urlToken = searchParams.get('token');
   const storeToken = useAuthStore((s) => s.scorerToken);
@@ -640,7 +641,7 @@ const ScorerPage = () => {
       <div className="p-4 border-b border-white/10">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div>
-            <button className="text-white mb-1">
+            <button onClick={() => navigate(-1)} className="text-white mb-1">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
@@ -670,6 +671,19 @@ const ScorerPage = () => {
           transition={{ duration: 0.4 }}
           className="space-y-4"
         >
+          {/* 1st Innings Summary (shown during 2nd innings) */}
+          {match?.currentInnings === 2 && allInnings?.[0] && (
+            <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] p-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-white/70 text-sm">{allInnings[0].battingTeam || match?.team1?.name}</span>
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-white font-bold text-lg">{allInnings[0].totalRuns}/{allInnings[0].totalWickets}</span>
+                <span className="text-white/50 text-xs">({allInnings[0].totalOvers} ov)</span>
+              </div>
+            </div>
+          )}
+
           {/* Scoreboard */}
           <Scoreboard match={match} innings={currentInnings} />
 
