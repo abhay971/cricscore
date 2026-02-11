@@ -15,8 +15,8 @@ const PlayerSelector = ({
   onBowlerChange
 }) => {
   // Get batting and bowling teams based on current innings (handle both identifier and actual name)
-  const bt = currentInnings?.battingTeam;
-  const isTeam1Batting = bt === match?.team1?.name || bt === 'team1';
+  const bt = currentInnings?.battingTeam?.trim();
+  const isTeam1Batting = bt === match?.team1?.name?.trim() || bt === 'team1';
   const battingTeam = isTeam1Batting ? match?.team1 : match?.team2;
   const bowlingTeam = isTeam1Batting ? match?.team2 : match?.team1;
 
