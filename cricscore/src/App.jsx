@@ -17,6 +17,7 @@ const LiveMatchesPage = lazy(() => import('./pages/LiveMatchesPage'));
 const CompletedMatchesPage = lazy(() => import('./pages/CompletedMatchesPage'));
 const ScorerLoginPage = lazy(() => import('./pages/ScorerLoginPage'));
 const ScorerMatchListPage = lazy(() => import('./pages/ScorerMatchListPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 
 // Loading component
 const PageLoader = () => (
@@ -57,6 +58,9 @@ function AnimatedRoutes() {
         {/* Scorer Routes */}
         <Route path="/scorer/login" element={<ScorerLoginPage />} />
         <Route path="/scorer/tournament/:tournamentId" element={<ScorerMatchListPage />} />
+
+        {/* Profile */}
+        <Route path="/profile" element={<ProfilePage />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
