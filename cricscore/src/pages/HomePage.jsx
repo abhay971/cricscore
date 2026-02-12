@@ -3,10 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import api from '../services/api';
 
-/**
- * HomePage - Mobile-First Design
- * Shows live matches and completed matches with horizontal scroll
- */
 const HomePage = () => {
   const navigate = useNavigate();
   const [liveMatches, setLiveMatches] = useState([]);
@@ -52,97 +48,92 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#2C2D3F] flex flex-col">
+    <div className="min-h-screen bg-[#0B0D14] flex flex-col">
       {/* Header */}
-      <div className="px-5 pt-6 pb-4 flex-shrink-0">
-        <h1 className="text-3xl font-black text-white mb-1">CricScore</h1>
-        <p className="text-white/60 text-base">Live Cricket Scoring</p>
+      <div className="px-5 pt-8 pb-5 flex-shrink-0">
+        <h1 className="text-2xl font-bold text-white tracking-tight">CricScore</h1>
+        <p className="text-white/40 text-sm mt-0.5">Live Cricket Scoring</p>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto pb-24">
-        <div className="space-y-6 py-4">
+        <div className="space-y-8 pb-4">
 
-          {/* Live Matches Section */}
+          {/* Live Matches */}
           <div>
-            <div className="flex items-center gap-2 mb-3 px-5">
-              <div className="w-3 h-3 bg-[#FF4B4B] rounded-full animate-pulse"></div>
-              <h2 className="text-xl font-bold text-white">Live Matches</h2>
+            <div className="flex items-center gap-2 mb-4 px-5">
+              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              <h2 className="text-base font-semibold text-white/90 tracking-wide uppercase">Live</h2>
             </div>
 
             {liveLoading ? (
               <div className="px-5">
-                <div className="bg-[#353647] border border-[#4A4B5E] rounded-[28px] p-8 text-center">
-                  <div className="animate-spin w-10 h-10 border-3 border-[#8BC9E8] border-t-transparent rounded-full mx-auto mb-3"></div>
-                  <p className="text-white/50 text-sm">Loading live matches...</p>
+                <div className="bg-[#141620] border border-[#1E2030] rounded-2xl p-8 text-center">
+                  <div className="animate-spin w-8 h-8 border-2 border-white/20 border-t-white/60 rounded-full mx-auto mb-3"></div>
+                  <p className="text-white/30 text-sm">Loading...</p>
                 </div>
               </div>
             ) : liveMatches.length === 0 ? (
               <div className="px-5">
-                <div className="bg-[#353647]/60 border border-[#4A4B5E] rounded-[24px] p-6 text-center">
-                  <p className="text-white/40 text-sm">No live matches right now</p>
+                <div className="bg-[#141620] border border-[#1E2030] rounded-2xl p-6 text-center">
+                  <p className="text-white/25 text-sm">No live matches right now</p>
                 </div>
               </div>
             ) : (
-              <div className="flex gap-4 overflow-x-auto px-5 pb-2 snap-x snap-mandatory scrollbar-hide">
+              <div className="flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory scrollbar-hide">
                 {liveMatches.map((match, index) => (
                   <motion.button
                     key={match.matchId}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
                     onClick={() => navigate(`/match/${match.matchId}`)}
                     whileTap={{ scale: 0.98 }}
-                    className="min-w-[85vw] max-w-[85vw] snap-start bg-[#353647] border border-[#4A4B5E] rounded-[28px] overflow-hidden shadow-xl text-left flex-shrink-0"
+                    className="min-w-[82vw] max-w-[82vw] snap-start bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden text-left flex-shrink-0"
                   >
-                    {/* Live Badge Header */}
-                    <div className="bg-gradient-to-r from-[#FF4B4B] to-[#FF6B6B] px-5 py-2.5 flex items-center justify-between">
+                    {/* Live strip */}
+                    <div className="bg-red-500/10 border-b border-red-500/20 px-4 py-2 flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-white rounded-full animate-pulse shadow-lg"></span>
-                        <span className="text-white font-black text-xs tracking-wide">LIVE</span>
+                        <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
+                        <span className="text-red-400 font-semibold text-xs tracking-wider">LIVE</span>
                       </div>
-                      <span className="text-white/90 text-xs font-medium">{match.matchType} &bull; {match.overs} ov</span>
+                      <span className="text-white/30 text-xs">{match.overs} ov</span>
                     </div>
 
-                    {/* Match Content */}
-                    <div className="p-5">
-                      <h3 className="text-lg font-bold text-white mb-3">
+                    <div className="p-4">
+                      <p className="text-white/50 text-xs font-medium mb-3">
                         {match.team1?.name} vs {match.team2?.name}
-                      </h3>
+                      </p>
 
                       {/* Score */}
-                      <div className="bg-[#2C2D3F] rounded-[16px] p-4 border border-[#4A4B5E]">
-                        <p className="text-xs text-white/50 mb-1 font-medium">
-                          {match.currentInnings?.battingTeam || match.team1?.name}
-                        </p>
-                        <div className="flex items-end justify-between">
-                          <div className="flex items-baseline gap-1.5">
-                            <span className="text-3xl font-black text-white">
+                      <div className="flex items-end justify-between mb-4">
+                        <div>
+                          <p className="text-[10px] text-white/30 mb-1 uppercase tracking-wider">
+                            {match.currentInnings?.battingTeam || match.team1?.name}
+                          </p>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-3xl font-bold text-white tracking-tight">
                               {match.currentInnings?.totalRuns || 0}
                             </span>
-                            <span className="text-xl font-bold text-white/50">/</span>
-                            <span className="text-xl font-bold text-white">
-                              {match.currentInnings?.totalWickets || 0}
-                            </span>
-                            <span className="text-sm text-white/50 ml-1">
+                            <span className="text-lg text-white/30 font-medium">/{match.currentInnings?.totalWickets || 0}</span>
+                            <span className="text-xs text-white/20 ml-1.5">
                               ({match.currentInnings?.totalOvers || 0}/{match.overs})
                             </span>
                           </div>
-                          <div className="text-right">
-                            <p className="text-[10px] text-white/40 mb-0.5">CRR</p>
-                            <p className="text-xl font-black text-[#8BC9E8]">
-                              {match.currentInnings?.runRate?.toFixed(1) || '0.0'}
-                            </p>
-                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] text-white/20 uppercase tracking-wider">CRR</p>
+                          <p className="text-lg font-bold text-emerald-400">
+                            {match.currentInnings?.runRate?.toFixed(1) || '0.0'}
+                          </p>
                         </div>
                       </div>
 
-                      {/* Watch Live */}
-                      <div className="mt-3 bg-[#8BC9E8] text-[#2C2D3F] rounded-full py-3 px-5 flex items-center justify-center gap-2 font-bold text-base shadow-lg">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <div className="bg-white/5 rounded-xl py-2.5 flex items-center justify-center gap-2">
+                        <svg className="w-3.5 h-3.5 text-white/60" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M8 5v14l11-7z" />
                         </svg>
-                        <span>Watch Live</span>
+                        <span className="text-white/60 font-medium text-sm">Watch Live</span>
                       </div>
                     </div>
                   </motion.button>
@@ -151,41 +142,14 @@ const HomePage = () => {
             )}
           </div>
 
-          {/* Tournaments - Dark card */}
-          <div className="px-5">
-            <motion.button
-              onClick={() => navigate('/tournaments')}
-              whileTap={{ scale: 0.97 }}
-              className="w-full bg-[#353647] border border-[#4A4B5E] rounded-[24px] p-5 flex items-center gap-4 active:bg-[#3D3E52] transition-colors min-h-[88px]"
-            >
-              <div className="w-16 h-16 bg-[#3D3E52] rounded-[18px] flex items-center justify-center flex-shrink-0">
-                <svg className="w-8 h-8 text-[#8BC9E8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
-                </svg>
-              </div>
-              <div className="flex-1 text-left">
-                <h3 className="text-xl font-bold text-white mb-0.5">Tournaments</h3>
-                <p className="text-white/50 text-sm">View all tournaments</p>
-              </div>
-              <svg className="w-7 h-7 text-white/30 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </motion.button>
-          </div>
-
-          {/* Completed Matches Section */}
+          {/* Completed Matches */}
           <div>
-            <div className="flex items-center justify-between mb-3 px-5">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#8BC9E8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h2 className="text-xl font-bold text-white">Completed</h2>
-              </div>
+            <div className="flex items-center justify-between mb-4 px-5">
+              <h2 className="text-base font-semibold text-white/90 tracking-wide uppercase">Recent</h2>
               {completedMatches.length > 0 && (
                 <button
                   onClick={() => navigate('/matches/completed')}
-                  className="text-[#8BC9E8] text-sm font-semibold"
+                  className="text-white/30 text-xs font-medium hover:text-white/50 transition-colors"
                 >
                   View All
                 </button>
@@ -194,82 +158,66 @@ const HomePage = () => {
 
             {completedLoading ? (
               <div className="px-5">
-                <div className="bg-[#353647] border border-[#4A4B5E] rounded-[28px] p-8 text-center">
-                  <div className="animate-spin w-10 h-10 border-3 border-[#8BC9E8] border-t-transparent rounded-full mx-auto mb-3"></div>
-                  <p className="text-white/50 text-sm">Loading...</p>
+                <div className="bg-[#141620] border border-[#1E2030] rounded-2xl p-8 text-center">
+                  <div className="animate-spin w-8 h-8 border-2 border-white/20 border-t-white/60 rounded-full mx-auto mb-3"></div>
+                  <p className="text-white/30 text-sm">Loading...</p>
                 </div>
               </div>
             ) : completedMatches.length === 0 ? (
               <div className="px-5">
-                <div className="bg-[#353647]/60 border border-[#4A4B5E] rounded-[24px] p-6 text-center">
-                  <p className="text-white/40 text-sm">No completed matches yet</p>
+                <div className="bg-[#141620] border border-[#1E2030] rounded-2xl p-6 text-center">
+                  <p className="text-white/25 text-sm">No completed matches yet</p>
                 </div>
               </div>
             ) : (
-              <div className="flex gap-4 overflow-x-auto px-5 pb-2 snap-x snap-mandatory scrollbar-hide">
+              <div className="flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory scrollbar-hide">
                 {completedMatches.map((match, index) => {
-                  const innings1 = match.innings?.[0];
-                  const innings2 = match.innings?.[1];
+                  const inn1 = match.innings?.[0];
+                  const inn2 = match.innings?.[1];
 
                   return (
                     <motion.button
                       key={match.matchId}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
                       onClick={() => navigate(`/match/${match.matchId}`)}
                       whileTap={{ scale: 0.98 }}
-                      className="min-w-[85vw] max-w-[85vw] snap-start bg-[#353647] border border-[#4A4B5E] rounded-[28px] overflow-hidden shadow-xl text-left flex-shrink-0"
+                      className="min-w-[82vw] max-w-[82vw] snap-start bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden text-left flex-shrink-0"
                     >
-                      {/* Completed Badge Header */}
-                      <div className="bg-gradient-to-r from-[#4A4B5E] to-[#5A5B6E] px-5 py-2.5 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                          </svg>
-                          <span className="text-white font-black text-xs tracking-wide">COMPLETED</span>
-                        </div>
-                        <span className="text-white/70 text-xs font-medium">{match.matchType} &bull; {match.overs} ov</span>
+                      {/* Header strip */}
+                      <div className="px-4 py-2 border-b border-[#1E2030] flex items-center justify-between">
+                        <span className="text-white/25 font-medium text-xs tracking-wider uppercase">Completed</span>
+                        <span className="text-white/20 text-xs">{match.overs} ov</span>
                       </div>
 
-                      {/* Match Content */}
-                      <div className="p-5">
-                        <h3 className="text-lg font-bold text-white mb-3">
-                          {match.team1?.name} vs {match.team2?.name}
-                        </h3>
-
-                        {/* Both Innings Scores */}
-                        <div className="bg-[#2C2D3F] rounded-[16px] p-4 border border-[#4A4B5E] space-y-2.5">
-                          {innings1 && (
+                      <div className="p-4">
+                        {/* Scores */}
+                        <div className="space-y-3 mb-3">
+                          {inn1 && (
                             <div className="flex items-center justify-between">
-                              <p className="text-sm text-white/70 font-medium truncate mr-3">{innings1.battingTeam}</p>
+                              <p className="text-sm text-white/60 font-medium truncate mr-3">{inn1.battingTeam}</p>
                               <div className="flex items-baseline gap-1 flex-shrink-0">
-                                <span className="text-xl font-black text-white">{innings1.totalRuns || 0}</span>
-                                <span className="text-base font-bold text-white/50">/</span>
-                                <span className="text-base font-bold text-white">{innings1.totalWickets || 0}</span>
-                                <span className="text-xs text-white/50 ml-1">({innings1.totalOvers || 0})</span>
+                                <span className="text-lg font-bold text-white">{inn1.totalRuns || 0}</span>
+                                <span className="text-sm text-white/25">/{inn1.totalWickets || 0}</span>
+                                <span className="text-[10px] text-white/15 ml-1">({inn1.totalOvers || 0})</span>
                               </div>
                             </div>
                           )}
-                          {innings1 && innings2 && (
-                            <div className="border-t border-[#4A4B5E]/50"></div>
-                          )}
-                          {innings2 && (
+                          {inn2 && (
                             <div className="flex items-center justify-between">
-                              <p className="text-sm text-white/70 font-medium truncate mr-3">{innings2.battingTeam}</p>
+                              <p className="text-sm text-white/60 font-medium truncate mr-3">{inn2.battingTeam}</p>
                               <div className="flex items-baseline gap-1 flex-shrink-0">
-                                <span className="text-xl font-black text-white">{innings2.totalRuns || 0}</span>
-                                <span className="text-base font-bold text-white/50">/</span>
-                                <span className="text-base font-bold text-white">{innings2.totalWickets || 0}</span>
-                                <span className="text-xs text-white/50 ml-1">({innings2.totalOvers || 0})</span>
+                                <span className="text-lg font-bold text-white">{inn2.totalRuns || 0}</span>
+                                <span className="text-sm text-white/25">/{inn2.totalWickets || 0}</span>
+                                <span className="text-[10px] text-white/15 ml-1">({inn2.totalOvers || 0})</span>
                               </div>
                             </div>
                           )}
                         </div>
 
-                        {/* Result */}
                         {match.result && (
-                          <p className="text-sm text-[#8BC9E8] font-semibold mt-3">{match.result}</p>
+                          <p className="text-xs text-emerald-400/80 font-medium">{match.result}</p>
                         )}
                       </div>
                     </motion.button>
@@ -283,42 +231,34 @@ const HomePage = () => {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#353647] border-t border-[#4A4B5E] safe-area-inset-bottom">
-        <div className="flex items-center justify-around py-2 px-4">
-          <button className="flex flex-col items-center gap-1 py-2 px-3 min-w-[72px]">
-            <div className="w-14 h-14 bg-[#8BC9E8] rounded-[16px] flex items-center justify-center shadow-lg">
-              <svg className="w-7 h-7 text-[#2C2D3F]" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-              </svg>
-            </div>
-            <span className="text-xs font-bold text-[#8BC9E8]">Home</span>
+      <div className="fixed bottom-0 left-0 right-0 bg-[#0B0D14]/95 backdrop-blur-xl border-t border-white/5 safe-area-inset-bottom">
+        <div className="flex items-center justify-around py-2 px-6">
+          <button className="flex flex-col items-center gap-1 py-2 px-4">
+            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+            </svg>
+            <span className="text-[10px] font-semibold text-white">Home</span>
           </button>
 
-          <button onClick={() => navigate('/tournaments')} className="flex flex-col items-center gap-1 py-2 px-3 min-w-[72px]">
-            <div className="w-14 h-14 flex items-center justify-center">
-              <svg className="w-7 h-7 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <span className="text-xs font-medium text-white/40">Stats</span>
+          <button onClick={() => navigate('/tournaments')} className="flex flex-col items-center gap-1 py-2 px-4">
+            <svg className="w-6 h-6 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M18.75 4.236c.982.143 1.954.317 2.916.52A6.003 6.003 0 0016.27 9.728M18.75 4.236V4.5c0 2.108-.966 3.99-2.48 5.228M18.75 4.236V2.721" />
+            </svg>
+            <span className="text-[10px] font-medium text-white/30">Tournaments</span>
           </button>
 
-          <button onClick={() => navigate('/matches/completed')} className="flex flex-col items-center gap-1 py-2 px-3 min-w-[72px]">
-            <div className="w-14 h-14 flex items-center justify-center">
-              <svg className="w-7 h-7 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <span className="text-xs font-medium text-white/40">Completed</span>
+          <button onClick={() => navigate('/matches/completed')} className="flex flex-col items-center gap-1 py-2 px-4">
+            <svg className="w-6 h-6 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-[10px] font-medium text-white/30">Results</span>
           </button>
 
-          <button onClick={() => navigate('/profile')} className="flex flex-col items-center gap-1 py-2 px-3 min-w-[72px]">
-            <div className="w-14 h-14 flex items-center justify-center">
-              <svg className="w-7 h-7 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
-            <span className="text-xs font-medium text-white/40">Profile</span>
+          <button onClick={() => navigate('/profile')} className="flex flex-col items-center gap-1 py-2 px-4">
+            <svg className="w-6 h-6 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+            <span className="text-[10px] font-medium text-white/30">Profile</span>
           </button>
         </div>
       </div>
