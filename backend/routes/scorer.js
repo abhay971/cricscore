@@ -257,7 +257,7 @@ router.post('/ball', scorerLimiter, asyncHandler(async (req, res) => {
   }
 
   // Compute batting team's player count for variable team sizes
-  const isTeam1Batting = innings.battingTeam === match.team1.name || innings.battingTeam === 'team1';
+  const isTeam1Batting = innings.battingTeam?.trim() === match.team1.name?.trim() || innings.battingTeam === 'team1';
   const battingTeamData = isTeam1Batting ? match.team1 : match.team2;
   const totalPlayers = battingTeamData.players.length;
 
@@ -482,23 +482,23 @@ router.delete('/ball/undo', asyncHandler(async (req, res) => {
 
   // Reverse all the changes made by this ball
   const totalRunsThisBall = lastBall.runs + lastBall.extras.runs;
-  innings.totalRuns -= totalRunsThisBall;
+  innings.totalRuns = Math.max(0, innings.totalRuns - totalRunsThisBall);
 
   if (lastBall.isWicket) {
-    innings.totalWickets -= 1;
+    innings.totalWickets = Math.max(0, innings.totalWickets - 1);
   }
 
   const isValidDelivery = lastBall.extras.type !== 'wide' && lastBall.extras.type !== 'noball';
   if (isValidDelivery) {
-    innings.balls -= 1;
+    innings.balls = Math.max(0, innings.balls - 1);
     innings.totalOvers = parseFloat(ballsToOvers(innings.balls));
   }
 
   // Reverse extras
-  if (lastBall.extras.type === 'wide') innings.extras.wides -= lastBall.extras.runs;
-  else if (lastBall.extras.type === 'noball') innings.extras.noBalls -= lastBall.extras.runs;
-  else if (lastBall.extras.type === 'bye') innings.extras.byes -= lastBall.extras.runs;
-  else if (lastBall.extras.type === 'legbye') innings.extras.legByes -= lastBall.extras.runs;
+  if (lastBall.extras.type === 'wide') innings.extras.wides = Math.max(0, innings.extras.wides - lastBall.extras.runs);
+  else if (lastBall.extras.type === 'noball') innings.extras.noBalls = Math.max(0, innings.extras.noBalls - lastBall.extras.runs);
+  else if (lastBall.extras.type === 'bye') innings.extras.byes = Math.max(0, innings.extras.byes - lastBall.extras.runs);
+  else if (lastBall.extras.type === 'legbye') innings.extras.legByes = Math.max(0, innings.extras.legByes - lastBall.extras.runs);
 
   // Reverse batsman stats (case-insensitive lookup)
   const batsmanIndex = innings.currentBatsmen.findIndex(b =>
@@ -506,10 +506,10 @@ router.delete('/ball/undo', asyncHandler(async (req, res) => {
   );
   if (batsmanIndex !== -1) {
     const batsmanStats = innings.currentBatsmen[batsmanIndex];
-    batsmanStats.runs -= lastBall.runs;
-    if (isValidDelivery) batsmanStats.balls -= 1;
-    if (lastBall.runs === 4) batsmanStats.fours -= 1;
-    if (lastBall.runs === 6) batsmanStats.sixes -= 1;
+    batsmanStats.runs = Math.max(0, batsmanStats.runs - lastBall.runs);
+    if (isValidDelivery) batsmanStats.balls = Math.max(0, batsmanStats.balls - 1);
+    if (lastBall.runs === 4) batsmanStats.fours = Math.max(0, batsmanStats.fours - 1);
+    if (lastBall.runs === 6) batsmanStats.sixes = Math.max(0, batsmanStats.sixes - 1);
     batsmanStats.strikeRate = calculateStrikeRate(batsmanStats.runs, batsmanStats.balls);
   }
 

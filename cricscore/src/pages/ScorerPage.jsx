@@ -165,8 +165,8 @@ const ScorerPage = () => {
 
   // Helper: check if current innings belongs to team1 (handles both identifier and actual name)
   const isBattingTeam1 = () => {
-    const bt = currentInnings?.battingTeam;
-    return bt === match?.team1?.name || bt === 'team1';
+    const bt = currentInnings?.battingTeam?.trim();
+    return bt === match?.team1?.name?.trim() || bt === 'team1';
   };
 
   const handleBallClick = (runs) => {

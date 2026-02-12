@@ -14,11 +14,12 @@ const Scoreboard = memo(({ match, innings }) => {
   const currentRunRate = innings?.runRate || 0.00;
   const requiredRunRate = innings?.requiredRunRate || 0.00;
 
-  // Team name resolution (handles corrupted old data)
+  // Team name resolution (handles corrupted old data + trimming)
   const resolveName = (name) => {
-    if (name === 'team1') return match?.team1?.name || name;
-    if (name === 'team2') return match?.team2?.name || name;
-    return name;
+    const trimmed = name?.trim();
+    if (trimmed === 'team1') return match?.team1?.name || name;
+    if (trimmed === 'team2') return match?.team2?.name || name;
+    return trimmed;
   };
   // Use innings data directly for team names (handles SO innings correctly)
   const battingTeam = resolveName(innings?.battingTeam) || match?.team1?.name;

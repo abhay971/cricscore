@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../common';
 
 /**
@@ -12,6 +12,14 @@ const ExtrasModal = ({ isOpen, onClose, onSubmit, extraType = 'wide' }) => {
     runs: 1,
     additionalRuns: 0
   });
+
+  // Sync when extraType prop changes (e.g., user clicks Wide then No Ball)
+  useEffect(() => {
+    if (isOpen) {
+      const defaultRuns = (extraType === 'wide' || extraType === 'noball') ? 1 : 0;
+      setExtrasData({ type: extraType, runs: defaultRuns, additionalRuns: 0 });
+    }
+  }, [extraType, isOpen]);
 
   const extraTypes = [
     { value: 'wide', label: 'Wide', defaultRuns: 1 },

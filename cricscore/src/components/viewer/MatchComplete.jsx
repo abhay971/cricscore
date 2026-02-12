@@ -13,17 +13,20 @@ const MatchComplete = ({ match, allInnings }) => {
   const innings4 = allInnings?.[3]; // SO innings 2
   const navigate = useNavigate();
 
-  // Resolve team names using toss data (handles corrupted old data)
+  // Resolve team names using toss data (handles corrupted old data + trimming)
   const resolveName = (name) => {
-    if (name === 'team1') return match?.team1?.name || name;
-    if (name === 'team2') return match?.team2?.name || name;
-    return name;
+    const trimmed = name?.trim();
+    if (trimmed === 'team1') return match?.team1?.name || name;
+    if (trimmed === 'team2') return match?.team2?.name || name;
+    return trimmed;
   };
   const tossWinnerName = resolveName(match?.tossWinner);
+  const t1 = match?.team1?.name?.trim();
+  const t2 = match?.team2?.name?.trim();
   const battedFirst = match?.tossDecision === 'bat'
     ? tossWinnerName
-    : (tossWinnerName === match?.team1?.name ? match?.team2?.name : match?.team1?.name);
-  const battedSecond = battedFirst === match?.team1?.name ? match?.team2?.name : match?.team1?.name;
+    : (tossWinnerName === t1 ? t2 : t1);
+  const battedSecond = battedFirst === t1 ? t2 : t1;
 
   const team1Name = battedFirst || match?.team1?.name || 'Team 1';
   const team2Name = battedSecond || match?.team2?.name || 'Team 2';
@@ -35,7 +38,7 @@ const MatchComplete = ({ match, allInnings }) => {
 
     allInn.forEach((inn) => {
       if (!inn?.currentBatsmen) return;
-      const battingTeamName = inn.battingTeam === match?.team1?.name ? team1Name : team2Name;
+      const battingTeamName = inn.battingTeam?.trim() === match?.team1?.name?.trim() ? team1Name : team2Name;
       inn.currentBatsmen.forEach((b) => {
         const existing = candidates.find(c => c.name?.trim().toLowerCase() === b.name?.trim().toLowerCase());
         const batScore = (b.runs || 0) + (b.fours || 0) * 2 + (b.sixes || 0) * 4;
@@ -63,7 +66,7 @@ const MatchComplete = ({ match, allInnings }) => {
     // Also consider bowling performances
     allInn.forEach((inn) => {
       if (!inn?.bowlers) return;
-      const bowlingTeamName = inn.bowlingTeam === match?.team1?.name ? team1Name : team2Name;
+      const bowlingTeamName = inn.bowlingTeam?.trim() === match?.team1?.name?.trim() ? team1Name : team2Name;
       inn.bowlers.forEach((b) => {
         const existing = candidates.find(c => c.name?.trim().toLowerCase() === b.name?.trim().toLowerCase());
         const bowlScore = (b.wickets || 0) * 25 - (b.economy || 0) * 2;

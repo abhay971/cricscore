@@ -133,7 +133,7 @@ const ViewerPage = () => {
 
   // Show Innings Break screen
   if (match?.status === 'innings_break') {
-    const firstInnings = allInnings?.[0] || currentInnings;
+    const firstInnings = allInnings?.find(i => i.inningsNumber === 1) || allInnings?.[0] || currentInnings;
     return (
       <InningsBreak
         match={match}
@@ -424,12 +424,12 @@ const TeamsTab = ({ match, currentInnings }) => {
       <PlayerList
         teamName={match?.team1?.name || 'Team 1'}
         players={team1Players}
-        isBatting={battingTeam === match?.team1?.name}
+        isBatting={battingTeam?.trim() === match?.team1?.name?.trim()}
       />
       <PlayerList
         teamName={match?.team2?.name || 'Team 2'}
         players={team2Players}
-        isBatting={battingTeam === match?.team2?.name}
+        isBatting={battingTeam?.trim() === match?.team2?.name?.trim()}
       />
     </div>
   );
