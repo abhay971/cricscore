@@ -74,8 +74,8 @@ const BoundaryAnimation = ({ runs = 4, batsman, onComplete }) => {
         >
           {/* Runs display */}
           <motion.div
-            className={`text-9xl md:text-[12rem] font-display font-black ${
-              isSix ? 'text-yellow-400' : 'text-accent-lightRed'
+            className={`text-9xl md:text-[12rem] font-bold ${
+              isSix ? 'text-yellow-400' : 'text-red-400'
             } mb-4`}
             style={{
               textShadow: isSix
@@ -100,7 +100,7 @@ const BoundaryAnimation = ({ runs = 4, batsman, onComplete }) => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-3xl md:text-5xl font-display font-bold text-neutral-white"
+            className="text-3xl md:text-5xl font-bold text-white"
           >
             {isSix ? 'MAXIMUM!' : 'FOUR!'}
           </motion.div>
@@ -111,7 +111,7 @@ const BoundaryAnimation = ({ runs = 4, batsman, onComplete }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="text-xl md:text-2xl font-body text-neutral-lightGray mt-4"
+              className="text-xl md:text-2xl text-white/60 mt-4"
             >
               {batsman}
             </motion.p>
@@ -123,7 +123,7 @@ const BoundaryAnimation = ({ runs = 4, batsman, onComplete }) => {
           <motion.div
             key={i}
             className={`absolute w-40 h-40 rounded-full border-4 ${
-              isSix ? 'border-yellow-400' : 'border-accent-lightRed'
+              isSix ? 'border-yellow-400' : 'border-red-400'
             }`}
             initial={{ scale: 0, opacity: 1 }}
             animate={{
@@ -145,7 +145,7 @@ const BoundaryAnimation = ({ runs = 4, batsman, onComplete }) => {
           {[...Array(20)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute text-4xl"
+              className="absolute"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`
@@ -162,7 +162,9 @@ const BoundaryAnimation = ({ runs = 4, batsman, onComplete }) => {
                 ease: "easeOut"
               }}
             >
-              ⭐
+              <svg className="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
             </motion.div>
           ))}
         </div>

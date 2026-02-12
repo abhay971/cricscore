@@ -10,20 +10,20 @@ const CurrentBatsmen = ({ batsmen = [] }) => {
   ];
 
   return (
-    <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg overflow-hidden">
+    <div className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 bg-bg-cardLight border-b border-[#4A4B5E]/30">
+      <div className="px-4 py-3 bg-[#0F1118] border-b border-[#1E2030]/30">
         <h3 className="font-bold text-white text-sm">
           Current Batsmen
         </h3>
       </div>
 
       {/* Batsmen List */}
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-[#1E2030]/30">
         {currentBatsmen.map((batsman, index) => (
           <div
             key={index}
-            className={`px-4 py-4 ${batsman.onStrike ? 'bg-brand-cyan/5 border-l-4 border-brand-cyan' : ''}`}
+            className={`px-4 py-4 ${batsman.onStrike ? 'bg-emerald-400/5 border-l-4 border-emerald-400' : ''}`}
           >
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-2.5">
@@ -31,13 +31,13 @@ const CurrentBatsmen = ({ batsmen = [] }) => {
                   {batsman.name}
                 </span>
                 {batsman.onStrike && (
-                  <div className="flex items-center gap-1 px-2 py-0.5 bg-brand-cyan/20 rounded-full">
-                    <div className="w-1.5 h-1.5 rounded-full bg-brand-cyan animate-pulse"></div>
-                    <span className="text-xs font-bold text-brand-cyan">STRIKE</span>
+                  <div className="flex items-center gap-1 px-2 py-0.5 bg-emerald-400/20 rounded-full">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
+                    <span className="text-xs font-bold text-emerald-400">STRIKE</span>
                   </div>
                 )}
               </div>
-              <div className="text-2xl font-black font-mono text-white">
+              <div className="text-2xl font-bold font-mono text-white">
                 {batsman.runs}
               </div>
             </div>
@@ -57,7 +57,7 @@ const CurrentBatsmen = ({ batsmen = [] }) => {
               </div>
               <div className="flex flex-col ml-auto">
                 <span className="text-white/70">Strike Rate</span>
-                <span className="font-bold text-brand-blue">{batsman.strikeRate.toFixed(2)}</span>
+                <span className="font-bold text-emerald-400">{batsman.strikeRate.toFixed(2)}</span>
               </div>
             </div>
           </div>

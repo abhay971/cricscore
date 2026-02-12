@@ -30,14 +30,13 @@ const Button = forwardRef(({
   };
 
   const variants = {
-    primary: 'bg-[#8BC9E8] hover:bg-[#A8D5E8] text-[#2C2D3F] shadow-lg',
-    secondary: 'bg-[#353647] hover:bg-[#3D3E52] text-white border border-[#4A4B5E]',
-    outline: 'bg-transparent hover:bg-[#353647] text-white border-2 border-[#4A4B5E]',
-    ghost: 'bg-transparent hover:bg-[#353647]/50 text-white',
-    danger: 'bg-red-500/100 hover:bg-red-600 text-white shadow-lg',
-    success: 'bg-green-500/100 hover:bg-green-600 text-white shadow-lg',
-    // Grid button style (for scorer interface)
-    grid: 'bg-[#353647] hover:bg-[#3D3E52] text-white border border-[#4A4B5E] shadow-lg font-semibold'
+    primary: 'bg-white hover:bg-white/90 text-[#0B0D14]',
+    secondary: 'bg-[#141620] hover:bg-[#1A1D2E] text-white border border-[#1E2030]',
+    outline: 'bg-transparent hover:bg-white/5 text-white border border-[#1E2030]',
+    ghost: 'bg-transparent hover:bg-white/5 text-white',
+    danger: 'bg-red-500/15 hover:bg-red-500/25 text-red-400 border border-red-500/20',
+    success: 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/20',
+    grid: 'bg-[#141620] hover:bg-[#1A1D2E] text-white border border-[#1E2030] font-semibold'
   };
 
   const sizes = {
@@ -59,8 +58,8 @@ const Button = forwardRef(({
         ${variants[variant]}
         ${sizes[size]}
         ${fullWidth ? 'w-full' : ''}
-        font-body font-medium
-        rounded-button
+        font-medium
+        rounded-xl
         transition-all duration-150
         disabled:opacity-50 disabled:cursor-not-allowed
         active:scale-[0.98]

@@ -51,10 +51,10 @@ const BallAnimation = ({ runs = 0, onComplete }) => {
       >
         {/* Cricket ball */}
         <div className="relative">
-          <div className="w-12 h-12 rounded-full bg-accent-red shadow-glow-red-strong" />
+          <div className="w-12 h-12 rounded-full bg-red-500" style={{ boxShadow: '0 0 20px rgba(239, 68, 68, 0.6)' }} />
           {/* Ball seam */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-8 h-0.5 bg-neutral-white rounded-full opacity-50" />
+            <div className="w-8 h-0.5 bg-white rounded-full opacity-50" />
           </div>
         </div>
 
@@ -65,7 +65,7 @@ const BallAnimation = ({ runs = 0, onComplete }) => {
           animate={{ opacity: [0, 0.5, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          <div className="w-12 h-12 rounded-full bg-accent-lightRed blur-md" />
+          <div className="w-12 h-12 rounded-full bg-red-400 blur-md" />
         </motion.div>
       </motion.div>
 
@@ -76,7 +76,7 @@ const BallAnimation = ({ runs = 0, onComplete }) => {
         animate={{ scale: [0, 1.5, 1], opacity: [0, 1, 0] }}
         transition={{ duration: 1.5, delay: 0.5 }}
       >
-        <div className="text-8xl font-display font-bold gradient-text">
+        <div className="text-8xl font-bold text-white">
           {runs}
         </div>
       </motion.div>

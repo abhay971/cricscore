@@ -97,10 +97,10 @@ const ViewerPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-dark-bg">
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0D14]">
         <div className="text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-light-blue border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-light-text">Loading match...</p>
+          <div className="animate-spin w-12 h-12 border-4 border-white/20 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-white">Loading match...</p>
         </div>
       </div>
     );
@@ -153,9 +153,9 @@ const ViewerPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg pb-20">
+    <div className="min-h-screen bg-[#0B0D14] pb-20">
       {/* Modern Header */}
-      <div className="sticky top-0 z-10 bg-dark-bg/95 backdrop-blur-lg border-b border-dark-lighter">
+      <div className="sticky top-0 z-10 bg-[#0B0D14]/95 backdrop-blur-lg border-b border-[#1E2030]">
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Back button and title */}
@@ -166,13 +166,13 @@ const ViewerPage = () => {
                 </svg>
               </button>
               <div>
-                <h1 className="text-lg font-bold text-light-text">Live Match</h1>
+                <h1 className="text-lg font-bold text-white">Live Match</h1>
                 <div className="flex items-center gap-2 mt-0.5">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 bg-accent-red rounded-full animate-pulse"></div>
-                    <span className="text-xs font-semibold text-accent-red">LIVE</span>
+                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-semibold text-red-500">LIVE</span>
                   </div>
-                  <span className="text-xs text-dark-text">• T20 Match</span>
+                  <span className="text-xs text-white/50">• T20 Match</span>
                 </div>
               </div>
             </div>
@@ -238,7 +238,7 @@ const ViewerPage = () => {
       </div>
 
       {/* Bottom Navigation - Mobile Optimized */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#353647] border-t border-[#4A4B5E]">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#0B0D14]/95 backdrop-blur-xl border-t border-white/5">
         <div className="flex items-center justify-around py-2 px-2">
           {[
             { id: 'match', label: 'Match', icon: <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />, filled: true },
@@ -249,18 +249,18 @@ const ViewerPage = () => {
             const isActive = activeTab === tab.id;
             return (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)} className="flex flex-col items-center gap-1 py-2 px-2 min-w-[68px]">
-                <div className={`w-12 h-12 rounded-[14px] flex items-center justify-center ${isActive ? 'bg-[#8BC9E8]' : ''}`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isActive ? 'bg-white/10' : ''}`}>
                   {tab.filled ? (
-                    <svg className={`w-6 h-6 ${isActive ? 'text-[#2C2D3F]' : 'text-white/40'}`} fill="currentColor" viewBox="0 0 24 24">
+                    <svg className={`w-5 h-5 ${isActive ? 'text-white' : 'text-white/30'}`} fill="currentColor" viewBox="0 0 24 24">
                       {tab.icon}
                     </svg>
                   ) : (
-                    <svg className={`w-6 h-6 ${isActive ? 'text-[#2C2D3F]' : 'text-white/40'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <svg className={`w-5 h-5 ${isActive ? 'text-white' : 'text-white/30'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       {tab.icon}
                     </svg>
                   )}
                 </div>
-                <span className={`text-xs ${isActive ? 'font-bold text-[#8BC9E8]' : 'font-medium text-white/40'}`}>{tab.label}</span>
+                <span className={`text-[10px] ${isActive ? 'font-semibold text-white' : 'font-medium text-white/30'}`}>{tab.label}</span>
               </button>
             );
           })}
@@ -282,8 +282,8 @@ const StatsTab = ({ innings, allInnings, match }) => {
   return (
     <div className="space-y-4">
       {/* Batting Card */}
-      <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#4A4B5E]/30">
+      <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#1E2030]/30">
           <h3 className="font-bold text-white text-sm">Batting</h3>
         </div>
         {batters.length > 0 ? (
@@ -301,10 +301,10 @@ const StatsTab = ({ innings, allInnings, match }) => {
               </thead>
               <tbody>
                 {batters.map((b, i) => (
-                  <tr key={i} className="border-t border-[#4A4B5E]/20">
+                  <tr key={i} className="border-t border-[#1E2030]/20">
                     <td className="px-4 py-2.5">
                       <span className="text-white font-medium">{b.name}</span>
-                      {b.status === 'batting' && <span className="text-[#8BC9E8] text-xs ml-1">*</span>}
+                      {b.status === 'batting' && <span className="text-[emerald-400] text-xs ml-1">*</span>}
                       {b.status !== 'batting' && b.dismissal && (
                         <p className="text-white/40 text-xs truncate max-w-[140px]">{b.dismissal}</p>
                       )}
@@ -324,15 +324,15 @@ const StatsTab = ({ innings, allInnings, match }) => {
         )}
         {/* Extras row */}
         {totalExtras > 0 && (
-          <div className="px-4 py-2 border-t border-[#4A4B5E]/30 text-xs text-white/50">
+          <div className="px-4 py-2 border-t border-[#1E2030]/30 text-xs text-white/50">
             Extras: {totalExtras} (wd {extras.wides || 0}, nb {extras.noBalls || 0}, b {extras.byes || 0}, lb {extras.legByes || 0})
           </div>
         )}
       </div>
 
       {/* Bowling Card */}
-      <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#4A4B5E]/30">
+      <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#1E2030]/30">
           <h3 className="font-bold text-white text-sm">Bowling</h3>
         </div>
         {bowlers.length > 0 ? (
@@ -350,15 +350,15 @@ const StatsTab = ({ innings, allInnings, match }) => {
               </thead>
               <tbody>
                 {bowlers.map((b, i) => (
-                  <tr key={i} className="border-t border-[#4A4B5E]/20">
+                  <tr key={i} className="border-t border-[#1E2030]/20">
                     <td className="px-4 py-2.5">
                       <span className="text-white font-medium">{b.name}</span>
-                      {b.isBowling && <span className="text-[#8BC9E8] text-xs ml-1">*</span>}
+                      {b.isBowling && <span className="text-[emerald-400] text-xs ml-1">*</span>}
                     </td>
                     <td className="text-right px-2 py-2.5 text-white/70">{b.overs || 0}</td>
                     <td className="text-right px-2 py-2.5 text-white/70">{b.maidens || 0}</td>
                     <td className="text-right px-2 py-2.5 text-white font-bold">{b.runs || 0}</td>
-                    <td className="text-right px-2 py-2.5 text-[#8BC9E8] font-bold">{b.wickets || 0}</td>
+                    <td className="text-right px-2 py-2.5 text-[emerald-400] font-bold">{b.wickets || 0}</td>
                     <td className="text-right px-3 py-2.5 text-white/70">{b.economy?.toFixed(1) || '0.0'}</td>
                   </tr>
                 ))}
@@ -372,7 +372,7 @@ const StatsTab = ({ innings, allInnings, match }) => {
 
       {/* Previous Innings Summary (if 2nd innings) */}
       {match?.currentInnings === 2 && allInnings?.[0] && (
-        <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg p-4">
+        <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  p-4">
           <h3 className="font-bold text-white text-sm mb-2">1st Innings</h3>
           <div className="flex items-baseline gap-2">
             <span className="text-white/70 text-sm">{allInnings[0].battingTeam}</span>
@@ -393,18 +393,18 @@ const TeamsTab = ({ match, currentInnings }) => {
   const team2Players = match?.team2?.players || [];
 
   const PlayerList = ({ teamName, players, isBatting }) => (
-    <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg overflow-hidden">
-      <div className="px-4 py-3 border-b border-[#4A4B5E]/30 flex items-center justify-between">
+    <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  overflow-hidden">
+      <div className="px-4 py-3 border-b border-[#1E2030]/30 flex items-center justify-between">
         <h3 className="font-bold text-white text-sm">{teamName}</h3>
         {isBatting && (
-          <span className="text-xs bg-[#8BC9E8]/20 text-[#8BC9E8] px-2 py-0.5 rounded-full font-semibold">BATTING</span>
+          <span className="text-xs bg-[emerald-400]/20 text-[emerald-400] px-2 py-0.5 rounded-full font-semibold">BATTING</span>
         )}
       </div>
       {players.length > 0 ? (
-        <div className="divide-y divide-[#4A4B5E]/20">
+        <div className="divide-y divide-[#1E2030]/20">
           {players.map((player, i) => (
             <div key={i} className="px-4 py-3 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#4A4B5E] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-[#1E2030] flex items-center justify-center">
                 <span className="text-white/70 text-xs font-bold">{i + 1}</span>
               </div>
               <span className="text-white text-sm">{player.name || player}</span>
@@ -472,7 +472,7 @@ const FallOfWickets = ({ balls, currentInningsNumber }) => {
   if (fowData.length === 0) return null;
 
   return (
-    <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg p-4">
+    <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  p-4">
       <h3 className="font-bold text-white text-sm mb-3">
         Fall of Wickets
       </h3>

@@ -45,14 +45,14 @@ const WicketModal = ({ isOpen, onClose, onSubmit, batsmen = [] }) => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg-elevated w-full max-w-md max-h-[90vh] overflow-y-auto"
+          className="bg-[#141620] border border-[#1E2030] rounded-2xl  w-full max-w-md max-h-[90vh] overflow-y-auto"
         >
-          <div className="p-5 border-b border-[#4A4B5E]/30">
+          <div className="p-5 border-b border-[#1E2030]/30">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-white">Record Wicket</h2>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-lg hover:bg-[#4A4B5E] flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -70,7 +70,7 @@ const WicketModal = ({ isOpen, onClose, onSubmit, batsmen = [] }) => {
                 required
                 value={wicketData.batsmanOut}
                 onChange={(e) => setWicketData({ ...wicketData, batsmanOut: e.target.value })}
-                className="w-full px-4 py-3 border border-[#4A4B5E] rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                className="w-full px-4 py-3 bg-[#0F1118] border border-[#1E2030] text-white rounded-xl focus:outline-none focus:ring-1 focus:ring-white/20"
               >
                 <option value="">Select batsman</option>
                 {batsmen.map((bat) => (
@@ -89,7 +89,7 @@ const WicketModal = ({ isOpen, onClose, onSubmit, batsmen = [] }) => {
                 required
                 value={wicketData.howOut}
                 onChange={(e) => setWicketData({ ...wicketData, howOut: e.target.value })}
-                className="w-full px-4 py-3 border border-[#4A4B5E] rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                className="w-full px-4 py-3 bg-[#0F1118] border border-[#1E2030] text-white rounded-xl focus:outline-none focus:ring-1 focus:ring-white/20"
               >
                 {howOutOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -110,7 +110,7 @@ const WicketModal = ({ isOpen, onClose, onSubmit, batsmen = [] }) => {
                   value={wicketData.fielder}
                   onChange={(e) => setWicketData({ ...wicketData, fielder: e.target.value })}
                   placeholder="Enter fielder name"
-                  className="w-full px-4 py-3 border border-[#4A4B5E] rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                  className="w-full px-4 py-3 bg-[#0F1118] border border-[#1E2030] text-white rounded-xl focus:outline-none focus:ring-1 focus:ring-white/20"
                 />
               </div>
             )}
@@ -125,7 +125,7 @@ const WicketModal = ({ isOpen, onClose, onSubmit, batsmen = [] }) => {
                 max="6"
                 value={wicketData.runs}
                 onChange={(e) => setWicketData({ ...wicketData, runs: parseInt(e.target.value) || 0 })}
-                className="w-full px-4 py-3 border border-[#4A4B5E] rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                className="w-full px-4 py-3 bg-[#0F1118] border border-[#1E2030] text-white rounded-xl focus:outline-none focus:ring-1 focus:ring-white/20"
               />
             </div>
 

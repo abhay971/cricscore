@@ -26,7 +26,7 @@ const SplashScreen = ({ onComplete }) => {
 
   return (
     <motion.div
-      className="fixed inset-0 bg-primary-black flex flex-col items-center justify-center z-50"
+      className="fixed inset-0 bg-[#0B0D14] flex flex-col items-center justify-center z-50"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
@@ -43,21 +43,21 @@ const SplashScreen = ({ onComplete }) => {
           delay: 0.2
         }}
       >
-        <div className="w-32 h-32 mx-auto mb-6 bg-gradient-red-black rounded-full flex items-center justify-center shadow-glow-red-strong">
+        <div className="w-32 h-32 mx-auto mb-6 bg-[#141620] border border-[#1E2030] rounded-full flex items-center justify-center">
           <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" /><path d="M2 12h4M18 12h4M12 2v4M12 18v4" stroke="currentColor" strokeWidth="2" /></svg>
         </div>
-        <h1 className="text-4xl font-display font-bold gradient-text">
+        <h1 className="text-4xl font-bold text-white">
           CricScore
         </h1>
-        <p className="text-neutral-mediumGray mt-2">
+        <p className="text-white/40 mt-2">
           Live Cricket Scoring
         </p>
       </motion.div>
 
       {/* Progress Bar */}
-      <div className="w-64 h-2 bg-primary-mediumGray rounded-full overflow-hidden">
+      <div className="w-64 h-2 bg-[#1E2030] rounded-full overflow-hidden">
         <motion.div
-          className="h-full bg-gradient-red-black"
+          className="h-full bg-white/60"
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.3 }}
@@ -66,7 +66,7 @@ const SplashScreen = ({ onComplete }) => {
 
       {/* Loading percentage */}
       <motion.p
-        className="text-accent-lightRed mt-4 font-mono"
+        className="text-white/40 mt-4 font-mono"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}

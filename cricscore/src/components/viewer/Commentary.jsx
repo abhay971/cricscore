@@ -24,12 +24,12 @@ const Commentary = ({ commentary = [] }) => {
       return 'border-l-4 border-green-500 bg-green-500/100/10';
     }
     if (lowerText.includes('four') || lowerText.includes('4')) {
-      return 'border-l-4 border-[#8BC9E8] bg-[#8BC9E8]/10';
+      return 'border-l-4 border-emerald-400 bg-emerald-400/10';
     }
     if (lowerText.includes('wide') || lowerText.includes('no ball')) {
       return 'border-l-4 border-orange-500 bg-orange-500/100/10';
     }
-    return 'border-l-4 border-[#4A4B5E] bg-[#353647]';
+    return 'border-l-4 border-[#1E2030] bg-[#141620]';
   };
 
   const formatTime = (timestamp) => {
@@ -44,24 +44,24 @@ const Commentary = ({ commentary = [] }) => {
 
   if (!commentary || commentary.length === 0) {
     return (
-      <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg p-8 text-center">
+      <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  p-8 text-center">
         <svg className="w-12 h-12 text-white/40 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
         <p className="text-white/70 text-sm">No commentary yet</p>
-        <p className="text-text-muted text-xs mt-1">Ball-by-ball updates will appear here</p>
+        <p className="text-white/30 text-xs mt-1">Ball-by-ball updates will appear here</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg overflow-hidden">
-      <div className="px-4 py-3 bg-bg-cardLight border-b border-[#4A4B5E]/30 flex items-center justify-between">
+    <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  overflow-hidden">
+      <div className="px-4 py-3 bg-[#0F1118] border-b border-[#1E2030]/30 flex items-center justify-between">
         <h3 className="font-bold text-white text-sm">Live Commentary</h3>
         <span className="text-xs text-white/70">{commentary.length} updates</span>
       </div>
 
-      <div ref={containerRef} className="max-h-96 overflow-y-auto divide-y divide-gray-100">
+      <div ref={containerRef} className="max-h-96 overflow-y-auto divide-y divide-[#1E2030]/30">
         <AnimatePresence mode="popLayout">
           {commentary.map((item, index) => (
             <motion.div
@@ -84,14 +84,14 @@ const Commentary = ({ commentary = [] }) => {
                   </p>
                   {item.runs !== undefined && (
                     <div className="flex items-center gap-2 mt-2">
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#4A4B5E] text-xs font-bold text-white">
+                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#1E2030] text-xs font-bold text-white">
                         {item.runs}
                       </span>
                       {item.extras && <span className="text-xs text-white/70">({item.extras})</span>}
                     </div>
                   )}
                 </div>
-                <div className="text-xs text-text-muted whitespace-nowrap">
+                <div className="text-xs text-white/30 whitespace-nowrap">
                   {formatTime(item.timestamp)}
                 </div>
               </div>

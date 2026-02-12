@@ -65,8 +65,8 @@ const PullToRefresh = ({ onRefresh, children, threshold = 80 }) => {
             <div className="text-center">
               {isRefreshing ? (
                 <>
-                  <div className="w-8 h-8 border-4 border-brand-blue border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                  <p className="text-sm text-brand-blue font-semibold">Refreshing...</p>
+                  <div className="w-8 h-8 border-4 border-white/20 border-t-white/60 rounded-full animate-spin mx-auto mb-2"></div>
+                  <p className="text-sm text-white/60 font-semibold">Refreshing...</p>
                 </>
               ) : (
                 <>
@@ -76,7 +76,7 @@ const PullToRefresh = ({ onRefresh, children, threshold = 80 }) => {
                     className="mb-2"
                   >
                     <svg
-                      className="w-8 h-8 text-brand-blue mx-auto"
+                      className="w-8 h-8 text-white/60 mx-auto"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -89,13 +89,13 @@ const PullToRefresh = ({ onRefresh, children, threshold = 80 }) => {
                       />
                     </svg>
                   </motion.div>
-                  <p className="text-sm text-brand-blue font-semibold">
+                  <p className="text-sm text-white/60 font-semibold">
                     {progress >= 100 ? 'Release to refresh' : 'Pull to refresh'}
                   </p>
                   {/* Progress indicator */}
-                  <div className="w-24 h-1 bg-[#4A4B5E] rounded-full mx-auto mt-2 overflow-hidden">
+                  <div className="w-24 h-1 bg-[#1E2030] rounded-full mx-auto mt-2 overflow-hidden">
                     <motion.div
-                      className="h-full bg-brand-blue rounded-full"
+                      className="h-full bg-white/40 rounded-full"
                       style={{ width: `${progress}%` }}
                     />
                   </div>

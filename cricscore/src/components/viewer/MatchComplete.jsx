@@ -122,13 +122,13 @@ const MatchComplete = ({ match, allInnings }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay }}
-        className="bg-[#353647] border border-[#4A4B5E] rounded-3xl overflow-hidden"
+        className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden"
       >
         {/* Section Title */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[#2C2D3F]">
+        <div className="flex items-center justify-between px-4 py-3 bg-[#0B0D14]">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-xl bg-[#8BC9E8]/20 flex items-center justify-center">
-              <span className="text-[#8BC9E8] font-bold text-[10px]">
+            <div className="w-7 h-7 rounded-xl bg-[emerald-400]/20 flex items-center justify-center">
+              <span className="text-[emerald-400] font-bold text-[10px]">
                 {teamName?.charAt(0)?.toUpperCase() || 'T'}
               </span>
             </div>
@@ -138,7 +138,7 @@ const MatchComplete = ({ match, allInnings }) => {
         </div>
 
         {/* Table Header */}
-        <div className="flex items-center px-4 py-2 border-b border-[#4A4B5E]/50 bg-[#2e2f42]">
+        <div className="flex items-center px-4 py-2 border-b border-[#1E2030]/50 bg-[#0F1118]">
           <span className="text-white/40 text-[11px] font-bold tracking-wider flex-1">BATTER</span>
           <div className="flex items-center">
             <span className="text-white/40 text-[11px] font-bold w-9 text-right">R</span>
@@ -150,11 +150,11 @@ const MatchComplete = ({ match, allInnings }) => {
         </div>
 
         {/* Batsmen Rows */}
-        <div className="divide-y divide-[#4A4B5E]/30">
+        <div className="divide-y divide-[#1E2030]/30">
           {innings.currentBatsmen.map((b, i) => {
             const sr = b.balls > 0 ? ((b.runs / b.balls) * 100).toFixed(1) : '0.0';
             return (
-              <div key={i} className={`flex items-center px-4 py-3 ${!b.isOut ? 'bg-[#3d3e52]' : ''}`}>
+              <div key={i} className={`flex items-center px-4 py-3 ${!b.isOut ? 'bg-[#1A1D2E]' : ''}`}>
                 <div className="flex-1 min-w-0 pr-2">
                   <span className={`text-sm font-semibold truncate block ${!b.isOut ? 'text-white' : 'text-white/70'}`}>
                     {b.name}
@@ -179,7 +179,7 @@ const MatchComplete = ({ match, allInnings }) => {
 
         {/* Extras */}
         {totalExtras > 0 && (
-          <div className="flex items-center justify-between px-4 py-2.5 bg-[#2C2D3F] border-t border-[#4A4B5E]/50">
+          <div className="flex items-center justify-between px-4 py-2.5 bg-[#0B0D14] border-t border-[#1E2030]/50">
             <span className="text-white/50 text-xs font-medium">Extras</span>
             <div className="flex items-center gap-3">
               <span className="text-white/30 text-[10px]">
@@ -191,7 +191,7 @@ const MatchComplete = ({ match, allInnings }) => {
         )}
 
         {/* Total */}
-        <div className="flex items-center justify-between px-4 py-2.5 bg-[#2C2D3F] border-t border-[#4A4B5E]/50">
+        <div className="flex items-center justify-between px-4 py-2.5 bg-[#0B0D14] border-t border-[#1E2030]/50">
           <span className="text-white/70 text-xs font-bold">Total</span>
           <div className="flex items-center gap-2">
             <span className="text-white font-bold text-sm">
@@ -214,10 +214,10 @@ const MatchComplete = ({ match, allInnings }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay }}
-        className="bg-[#353647] border border-[#4A4B5E] rounded-3xl overflow-hidden"
+        className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden"
       >
         {/* Section Title */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[#2C2D3F]">
+        <div className="flex items-center justify-between px-4 py-3 bg-[#0B0D14]">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-xl bg-amber-500/20 flex items-center justify-center">
               <span className="text-amber-400 font-bold text-[10px]">
@@ -230,7 +230,7 @@ const MatchComplete = ({ match, allInnings }) => {
         </div>
 
         {/* Table Header */}
-        <div className="flex items-center px-4 py-2 border-b border-[#4A4B5E]/50 bg-[#2e2f42]">
+        <div className="flex items-center px-4 py-2 border-b border-[#1E2030]/50 bg-[#0F1118]">
           <span className="text-white/40 text-[11px] font-bold tracking-wider flex-1">BOWLER</span>
           <div className="flex items-center">
             <span className="text-white/40 text-[11px] font-bold w-9 text-right">O</span>
@@ -242,7 +242,7 @@ const MatchComplete = ({ match, allInnings }) => {
         </div>
 
         {/* Bowler Rows */}
-        <div className="divide-y divide-[#4A4B5E]/30">
+        <div className="divide-y divide-[#1E2030]/30">
           {bowlers.map((b, i) => (
             <div key={i} className="flex items-center px-4 py-3">
               <span className="text-white/70 text-sm font-semibold truncate flex-1 min-w-0 pr-2">
@@ -265,7 +265,7 @@ const MatchComplete = ({ match, allInnings }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1B2E] pb-8 overflow-y-auto">
+    <div className="min-h-screen bg-[#0B0D14] pb-8 overflow-y-auto">
       {/* Confetti particles */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         {[...Array(20)].map((_, i) => (
@@ -273,7 +273,7 @@ const MatchComplete = ({ match, allInnings }) => {
             key={i}
             className="absolute w-2 h-2 rounded-full"
             style={{
-              background: ['#FFD700', '#FF6B6B', '#8BC9E8', '#4ADE80', '#F472B6'][i % 5]
+              background: ['#FFD700', '#FF6B6B', '#34D399', '#4ADE80', '#F472B6'][i % 5]
             }}
             initial={{
               x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 400),
@@ -303,7 +303,7 @@ const MatchComplete = ({ match, allInnings }) => {
           transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
           className="text-center mb-2"
         >
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full shadow-lg shadow-yellow-500/30">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full  shadow-yellow-500/30">
             <svg className="w-10 h-10 text-amber-900" fill="currentColor" viewBox="0 0 24 24">
               <path d="M5 3h14c.6 0 1 .4 1 1v2c0 3.3-2.7 6-6 6h-.8c-.5 1.5-1.5 2.7-2.8 3.5.2.3.4.6.6 1 .3-.1.7-.2 1-.2 1.7 0 3 1.3 3 3v1H8v-1c0-1.7 1.3-3 3-3 .3 0 .7.1 1 .2.2-.4.4-.7.6-1C11.2 14.7 10.2 13.5 9.8 12H9c-3.3 0-6-2.7-6-6V4c0-.6.4-1 1-1zm1 2v1c0 2.2 1.8 4 4 4h4c2.2 0 4-1.8 4-4V5H6z"/>
             </svg>
@@ -317,7 +317,7 @@ const MatchComplete = ({ match, allInnings }) => {
           transition={{ delay: 0.4 }}
           className="text-center"
         >
-          <h1 className="text-3xl font-black text-white tracking-tight mb-2">MATCH COMPLETE</h1>
+          <h1 className="text-3xl font-bold text-white tracking-tight mb-2">MATCH COMPLETE</h1>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur rounded-full">
             <span className="text-white/70 text-sm font-medium">{match?.matchType || 'Custom'}</span>
             <span className="w-1 h-1 bg-white/40 rounded-full" />
@@ -330,10 +330,10 @@ const MatchComplete = ({ match, allInnings }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="bg-gradient-to-br from-amber-500/20 to-yellow-600/10 border border-amber-500/30 rounded-3xl p-6"
+          className="bg-gradient-to-br from-amber-500/20 to-yellow-600/10 border border-amber-500/30 rounded-2xl p-6"
         >
           <p className="text-amber-400 text-xs font-bold tracking-widest text-center mb-3">WINNER</p>
-          <h2 className="text-2xl font-black text-white text-center mb-1">
+          <h2 className="text-2xl font-bold text-white text-center mb-1">
             {winnerInfo.text}
           </h2>
           <p className="text-amber-300/80 text-sm font-medium text-center">
@@ -346,13 +346,13 @@ const MatchComplete = ({ match, allInnings }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="bg-[#353647] border border-[#4A4B5E] rounded-3xl p-5"
+          className="bg-[#141620] border border-[#1E2030] rounded-2xl p-5"
         >
           {/* Team 1 Score */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#8BC9E8]/20 flex items-center justify-center">
-                <span className="text-[#8BC9E8] font-bold text-sm">
+              <div className="w-10 h-10 rounded-2xl bg-[emerald-400]/20 flex items-center justify-center">
+                <span className="text-[emerald-400] font-bold text-sm">
                   {team1Name?.charAt(0)?.toUpperCase() || 'T'}
                 </span>
               </div>
@@ -371,7 +371,7 @@ const MatchComplete = ({ match, allInnings }) => {
             </div>
           </div>
 
-          <div className="h-px bg-[#4A4B5E] mb-4" />
+          <div className="h-px bg-[#1E2030] mb-4" />
 
           {/* Team 2 Score */}
           <div className="flex items-center justify-between">
@@ -419,7 +419,7 @@ const MatchComplete = ({ match, allInnings }) => {
               className="flex items-center gap-3 py-2"
             >
               <div className="flex-1 h-px bg-amber-500/30" />
-              <span className="bg-amber-500 text-[#2C2D3F] text-xs font-bold px-4 py-1.5 rounded-full">SUPER OVER</span>
+              <span className="bg-amber-500 text-[#0B0D14] text-xs font-bold px-4 py-1.5 rounded-full">SUPER OVER</span>
               <div className="flex-1 h-px bg-amber-500/30" />
             </motion.div>
 
@@ -441,14 +441,14 @@ const MatchComplete = ({ match, allInnings }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.0 }}
-            className="bg-gradient-to-br from-[#8BC9E8]/10 to-[#8BC9E8]/5 border border-[#8BC9E8]/20 rounded-3xl p-5"
+            className="bg-gradient-to-br from-[emerald-400]/10 to-[emerald-400]/5 border border-[emerald-400]/20 rounded-2xl p-5"
           >
-            <p className="text-[#8BC9E8]/60 text-xs font-bold tracking-widest text-center mb-3">
+            <p className="text-[emerald-400]/60 text-xs font-bold tracking-widest text-center mb-3">
               PLAYER OF THE MATCH
             </p>
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-[#8BC9E8]/20 rounded-full mb-3">
-                <span className="text-[#8BC9E8] font-bold text-lg">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-[emerald-400]/20 rounded-full mb-3">
+                <span className="text-[emerald-400] font-bold text-lg">
                   {playerOfMatch.name?.charAt(0)?.toUpperCase() || '?'}
                 </span>
               </div>
@@ -486,7 +486,7 @@ const MatchComplete = ({ match, allInnings }) => {
         >
           <button
             onClick={() => navigate(`/tournament/${match?.tournamentId}`)}
-            className="w-full py-4 bg-[#8BC9E8] hover:bg-[#7AB8D7] active:scale-[0.98] text-[#1A1B2E] font-bold text-base rounded-2xl transition-all"
+            className="w-full py-4 bg-white hover:bg-white/90 active:scale-[0.98] text-[#0B0D14] font-bold text-base rounded-2xl transition-all"
           >
             Back to Tournament
           </button>

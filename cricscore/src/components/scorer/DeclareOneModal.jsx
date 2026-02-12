@@ -50,14 +50,14 @@ const DeclareOneModal = ({ isOpen, onClose, onSubmit }) => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg-elevated w-full max-w-md"
+          className="bg-[#141620] border border-[#1E2030] rounded-2xl  w-full max-w-md"
         >
-          <div className="p-5 border-b border-[#4A4B5E]/30">
+          <div className="p-5 border-b border-[#1E2030]/30">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-white">Declare 1 Run</h2>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-lg hover:bg-[#353647] flex items-center justify-center transition-colors text-white"
+                className="w-8 h-8 rounded-lg hover:bg-[#141620] flex items-center justify-center transition-colors text-white"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -79,8 +79,8 @@ const DeclareOneModal = ({ isOpen, onClose, onSubmit }) => {
                     onClick={() => handleTypeChange(type.value)}
                     className={`w-full px-4 py-3 rounded-lg border-2 font-semibold transition-all ${
                       declareData.extraType === type.value
-                        ? 'border-[#8BC9E8] bg-[#8BC9E8] text-white'
-                        : 'border-[#4A4B5E] bg-[#2C2D3F] text-white hover:border-[#8BC9E8]'
+                        ? 'border-white bg-white text-[#0B0D14]'
+                        : 'border-[#1E2030] bg-[#0F1118] text-white hover:border-white/30'
                     }`}
                   >
                     {type.label}
@@ -89,7 +89,7 @@ const DeclareOneModal = ({ isOpen, onClose, onSubmit }) => {
               </div>
             </div>
 
-            <div className="bg-[#2C2D3F] rounded-lg p-4">
+            <div className="bg-[#0F1118] rounded-lg p-4">
               <div className="text-sm text-white/70">
                 {declareData.extraType === 'none' && '1 run scored, strike stays same'}
                 {declareData.extraType === 'wide' && '1 (declare) + 1 (wide) + additional runs, extra ball'}
@@ -108,17 +108,17 @@ const DeclareOneModal = ({ isOpen, onClose, onSubmit }) => {
                 value={declareData.additionalRuns}
                 onChange={(e) => setDeclareData({ ...declareData, additionalRuns: parseInt(e.target.value) || 0 })}
                 placeholder="0"
-                className="w-full px-4 py-3 bg-[#2C2D3F] border border-[#4A4B5E] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8BC9E8] text-lg font-bold text-center"
+                className="w-full px-4 py-3 bg-[#0F1118] border border-[#1E2030] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-white/20 text-lg font-bold text-center"
               />
               <p className="text-xs text-white/70 mt-1 text-center">
                 Runs scored by batsman (if any)
               </p>
             </div>
 
-            <div className="bg-[#8BC9E8]/10 border border-[#8BC9E8]/30 rounded-lg p-4">
+            <div className="bg-emerald-400/10 border border-emerald-400/30 rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-white">Total Runs:</span>
-                <span className="text-2xl font-bold text-[#8BC9E8]">{totalRuns}</span>
+                <span className="text-2xl font-bold text-emerald-400">{totalRuns}</span>
               </div>
               <div className="text-xs text-white/70 mt-2">
                 <span className="inline-flex items-center gap-1">

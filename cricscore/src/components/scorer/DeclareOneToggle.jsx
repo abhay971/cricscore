@@ -5,7 +5,7 @@
  */
 const DeclareOneToggle = ({ checked, onChange, disabled = false }) => {
   return (
-    <div className="flex items-center justify-between p-4 bg-[#353647] rounded-[20px] border border-[#4A4B5E]">
+    <div className="flex items-center justify-between p-4 bg-[#141620] rounded-2xl border border-[#1E2030]">
       <div className="flex-1">
         <label htmlFor="declare-one" className="flex items-start gap-2 cursor-pointer">
           <div className="flex-1">
@@ -34,12 +34,12 @@ const DeclareOneToggle = ({ checked, onChange, disabled = false }) => {
           className={`
             block w-12 h-7 rounded-full transition-colors cursor-pointer
             ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-            ${checked ? 'bg-[#8BC9E8]' : 'bg-[#4A4B5E]'}
+            ${checked ? 'bg-emerald-400' : 'bg-[#1E2030]'}
           `}
         >
           <div
             className={`
-              absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow-md transition-transform
+              absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform
               ${checked ? 'translate-x-5' : 'translate-x-0'}
             `}
           ></div>

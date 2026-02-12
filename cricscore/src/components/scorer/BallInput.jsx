@@ -89,7 +89,7 @@ const BallInput = ({ onBallClick, onExtrasClick, onWicketClick, onDeclareOneClic
             variant="grid"
             size="grid"
             onClick={onDeclareOneClick}
-            className="min-h-[64px] text-base font-bold bg-[#8BC9E8]/10 border-[#8BC9E8] hover:bg-[#8BC9E8]/20"
+            className="min-h-[64px] text-base font-bold bg-emerald-500/10 border-emerald-500/30 hover:bg-emerald-500/20"
           >
             DECLARE 1 RUN
           </Button>

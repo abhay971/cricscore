@@ -12,7 +12,7 @@ const SuperOverBreak = ({ match, innings1, innings2, onStartSuperOver }) => {
   const soBattingFirst = team2Name;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#1A1B2E] flex items-center justify-center p-5 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-[#0B0D14] flex items-center justify-center p-5 overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -41,7 +41,7 @@ const SuperOverBreak = ({ match, innings1, innings2, onStartSuperOver }) => {
           transition={{ delay: 0.3 }}
           className="text-center mb-6"
         >
-          <h1 className="text-3xl font-black text-white mb-1">Match Tied!</h1>
+          <h1 className="text-3xl font-bold text-white mb-1">Match Tied!</h1>
           <p className="text-white/50 text-sm">A Super Over will decide the winner</p>
         </motion.div>
 
@@ -50,14 +50,14 @@ const SuperOverBreak = ({ match, innings1, innings2, onStartSuperOver }) => {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="bg-[#353647] border border-[#4A4B5E] rounded-[28px] overflow-hidden mb-5"
+          className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden mb-5"
         >
-          <div className="grid grid-cols-2 divide-x divide-[#4A4B5E]/30">
+          <div className="grid grid-cols-2 divide-x divide-[#1E2030]/30">
             {/* Team 1 */}
             <div className="p-5 text-center">
               <p className="text-white/50 text-xs font-semibold tracking-wider mb-2">{team1Name?.toUpperCase()}</p>
               <div className="flex items-end justify-center gap-1">
-                <span className="text-4xl font-black text-white">{innings1?.totalRuns ?? 0}</span>
+                <span className="text-4xl font-bold text-white">{innings1?.totalRuns ?? 0}</span>
                 <span className="text-2xl font-bold text-white/50">/{innings1?.totalWickets ?? 0}</span>
               </div>
               <p className="text-white/40 text-xs mt-1">({innings1?.totalOvers ?? 0} ov)</p>
@@ -67,7 +67,7 @@ const SuperOverBreak = ({ match, innings1, innings2, onStartSuperOver }) => {
             <div className="p-5 text-center">
               <p className="text-white/50 text-xs font-semibold tracking-wider mb-2">{team2Name?.toUpperCase()}</p>
               <div className="flex items-end justify-center gap-1">
-                <span className="text-4xl font-black text-white">{innings2?.totalRuns ?? 0}</span>
+                <span className="text-4xl font-bold text-white">{innings2?.totalRuns ?? 0}</span>
                 <span className="text-2xl font-bold text-white/50">/{innings2?.totalWickets ?? 0}</span>
               </div>
               <p className="text-white/40 text-xs mt-1">({innings2?.totalOvers ?? 0} ov)</p>
@@ -80,7 +80,7 @@ const SuperOverBreak = ({ match, innings1, innings2, onStartSuperOver }) => {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="bg-[#353647] border border-[#4A4B5E] rounded-[28px] p-5 mb-5"
+          className="bg-[#141620] border border-[#1E2030] rounded-2xl p-5 mb-5"
         >
           <h3 className="text-white font-bold text-sm mb-3">Super Over Rules</h3>
           <div className="space-y-2 text-sm text-white/60">
@@ -110,7 +110,7 @@ const SuperOverBreak = ({ match, innings1, innings2, onStartSuperOver }) => {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={onStartSuperOver}
-              className="bg-amber-500 text-[#2C2D3F] rounded-full py-4 px-12 font-bold text-lg shadow-xl active:shadow-lg transition-all"
+              className="bg-amber-500 text-[#0B0D14] rounded-full py-4 px-12 font-bold text-lg active:scale-[0.98] transition-all"
             >
               Start Super Over
             </motion.button>

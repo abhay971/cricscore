@@ -9,12 +9,12 @@ const Badge = ({
   className = ''
 }) => {
   const variants = {
-    blue: 'bg-accent-info text-white',
-    success: 'bg-accent-success text-white',
-    warning: 'bg-accent-warning text-white',
-    danger: 'bg-accent-danger text-white',
-    gray: 'bg-[#4A4B5E] text-text-secondary',
-    outline: 'bg-transparent border border-[#4A4B5E] text-text-secondary'
+    blue: 'bg-blue-500/20 text-blue-400',
+    success: 'bg-emerald-500/20 text-emerald-400',
+    warning: 'bg-amber-500/20 text-amber-400',
+    danger: 'bg-red-500/20 text-red-400',
+    gray: 'bg-white/10 text-white/60',
+    outline: 'bg-transparent border border-[#1E2030] text-white/60'
   };
 
   const sizes = {

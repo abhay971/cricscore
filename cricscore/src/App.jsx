@@ -21,10 +21,10 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 
 // Loading component
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-brand-navy">
+  <div className="min-h-screen flex items-center justify-center bg-[#0B0D14]">
     <div className="text-center">
-      <div className="animate-spin w-12 h-12 border-4 border-brand-cyan border-t-transparent rounded-full mx-auto mb-4"></div>
-      <p className="text-text-onDark">Loading...</p>
+      <div className="animate-spin w-12 h-12 border-2 border-white/20 border-t-white/60 rounded-full mx-auto mb-4"></div>
+      <p className="text-white/50">Loading...</p>
     </div>
   </div>
 );
@@ -75,13 +75,13 @@ function AnimatedRoutes() {
  */
 function NotFound() {
   return (
-    <div className="min-h-screen bg-primary-black flex items-center justify-center">
+    <div className="min-h-screen bg-[#0B0D14] flex items-center justify-center">
       <div className="text-center">
-        <h1 className="text-9xl font-display font-bold text-accent-red mb-4">404</h1>
-        <p className="text-2xl text-neutral-white mb-8">Page Not Found</p>
+        <h1 className="text-9xl font-bold text-white/10 mb-4">404</h1>
+        <p className="text-2xl text-white mb-8">Page Not Found</p>
         <a
           href="/"
-          className="text-accent-lightRed hover:text-accent-red transition-colors"
+          className="text-white/50 hover:text-white transition-colors"
         >
           Go Back Home
         </a>

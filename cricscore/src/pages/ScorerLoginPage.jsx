@@ -5,7 +5,7 @@ import { useAuthStore } from '../store';
 import api from '../services/api';
 
 /**
- * Scorer Login Page - Tournament PIN Authentication
+ * Scorer Login Page - Premium Dark Theme
  */
 const ScorerLoginPage = () => {
   const navigate = useNavigate();
@@ -33,14 +33,8 @@ const ScorerLoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#2C2D3F] relative overflow-hidden flex items-center justify-center">
-      {/* Background effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#8BC9E8]/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#8BC9E8]/5 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10 px-6 w-full max-w-md">
+    <div className="min-h-screen bg-[#0B0D14] flex items-center justify-center">
+      <div className="px-6 w-full max-w-md">
         {/* Back button */}
         <button
           onClick={() => navigate('/')}
@@ -57,15 +51,10 @@ const ScorerLoginPage = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-8"
+          className="mb-8"
         >
-          <div className="w-16 h-16 bg-gradient-to-br from-[#8BC9E8] to-[#6BA8C8] rounded-[18px] flex items-center justify-center shadow-xl mx-auto mb-4">
-            <svg className="w-8 h-8 text-[#2C2D3F]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Scorer Login</h1>
-          <p className="text-white/60 mt-2">Enter your tournament ID and PIN to start scoring</p>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Scorer Login</h1>
+          <p className="text-white/60 text-sm mt-2">Enter your tournament ID and PIN to start scoring</p>
         </motion.div>
 
         {/* Login Card */}
@@ -73,12 +62,12 @@ const ScorerLoginPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-gradient-to-br from-[#353647] to-[#2C2D3F] border border-[#4A4B5E]/50 rounded-[28px] p-8 shadow-2xl"
+          className="bg-[#141620] border border-[#1E2030] rounded-2xl p-8"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Tournament ID */}
             <div>
-              <label htmlFor="tournamentId" className="block text-sm font-bold text-white mb-3 tracking-wide uppercase opacity-70">
+              <label htmlFor="tournamentId" className="block text-xs font-medium text-white/40 mb-2 tracking-wider uppercase">
                 Tournament ID
               </label>
               <input
@@ -88,13 +77,13 @@ const ScorerLoginPage = () => {
                 onChange={(e) => setTournamentId(e.target.value)}
                 placeholder="T-2026-001"
                 required
-                className="w-full px-6 py-4 bg-[#2C2D3F] border-2 border-[#4A4B5E] text-white text-lg placeholder-white/30 rounded-[20px] focus:outline-none focus:ring-2 focus:ring-[#8BC9E8] focus:border-[#8BC9E8] transition-all"
+                className="w-full px-4 py-3 bg-[#0F1118] border border-[#1E2030] text-white text-sm rounded-xl focus:outline-none focus:ring-1 focus:ring-white/20 focus:border-white/30 transition-all placeholder-white/20"
               />
             </div>
 
             {/* PIN */}
             <div>
-              <label htmlFor="pin" className="block text-sm font-bold text-white mb-3 tracking-wide uppercase opacity-70">
+              <label htmlFor="pin" className="block text-xs font-medium text-white/40 mb-2 tracking-wider uppercase">
                 Scorer PIN
               </label>
               <input
@@ -107,7 +96,7 @@ const ScorerLoginPage = () => {
                 onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
                 placeholder="Enter 4-6 digit PIN"
                 required
-                className="w-full px-6 py-4 bg-[#2C2D3F] border-2 border-[#4A4B5E] text-white text-lg placeholder-white/30 rounded-[20px] focus:outline-none focus:ring-2 focus:ring-[#8BC9E8] focus:border-[#8BC9E8] transition-all tracking-[0.3em] text-center"
+                className="w-full px-4 py-3 bg-[#0F1118] border border-[#1E2030] text-white text-sm rounded-xl focus:outline-none focus:ring-1 focus:ring-white/20 focus:border-white/30 transition-all placeholder-white/20 tracking-[0.3em] text-center"
               />
             </div>
 
@@ -116,7 +105,7 @@ const ScorerLoginPage = () => {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="p-4 bg-red-500/10 border border-red-500/30 rounded-[20px]"
+                className="p-4 bg-red-400/10 border border-red-400/20 rounded-xl"
               >
                 <div className="flex items-center gap-3">
                   <svg className="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,7 +120,7 @@ const ScorerLoginPage = () => {
             <button
               type="submit"
               disabled={loading || !tournamentId || !pin}
-              className="w-full py-4 bg-gradient-to-r from-[#8BC9E8] to-[#6BA8C8] text-[#2C2D3F] font-bold text-lg rounded-[20px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3.5 bg-white text-[#0B0D14] font-semibold text-sm rounded-xl disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-3">

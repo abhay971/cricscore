@@ -576,7 +576,7 @@ const ScorerPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-white text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
+          <div className="animate-spin w-12 h-12 border-2 border-white/20 border-t-white/60 rounded-full mx-auto mb-4"></div>
           <p>Loading scorer panel...</p>
         </div>
       </div>
@@ -586,7 +586,7 @@ const ScorerPage = () => {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg-elevated p-8 max-w-md mx-4">
+        <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  p-8 max-w-md mx-4">
           <h2 className="text-2xl font-bold text-white mb-4">
             Authentication Required
           </h2>
@@ -745,7 +745,7 @@ const ScorerPage = () => {
         >
           {/* 1st Innings Summary (shown during 2nd innings) */}
           {match?.currentInnings === 2 && allInnings?.[0] && (
-            <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] p-4 flex items-center justify-between">
+            <div className="bg-[#141620] border border-[#1E2030] rounded-2xl p-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-white/70 text-sm">{allInnings[0].battingTeam || match?.team1?.name}</span>
               </div>
@@ -760,9 +760,9 @@ const ScorerPage = () => {
           {match?.currentInnings === 4 && (() => {
             const soInn3 = allInnings?.find(i => i.inningsNumber === 3);
             return soInn3 ? (
-              <div className="bg-[#353647] border border-amber-500/30 rounded-[24px] p-4 flex items-center justify-between">
+              <div className="bg-[#141620] border border-amber-500/30 rounded-2xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="bg-amber-500 text-[#2C2D3F] text-[10px] font-bold px-2 py-0.5 rounded-full">SO</span>
+                  <span className="bg-amber-500 text-[#0B0D14] text-[10px] font-bold px-2 py-0.5 rounded-full">SO</span>
                   <span className="text-white/70 text-sm">{soInn3.battingTeam}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
@@ -784,7 +784,7 @@ const ScorerPage = () => {
           />
 
           {/* Player selectors */}
-          <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg p-4">
+          <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  p-4">
             <PlayerSelector
               match={match}
               currentInnings={currentInnings}
@@ -798,7 +798,7 @@ const ScorerPage = () => {
           </div>
 
           {/* Ball input grid */}
-          <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg p-4 mb-4">
+          <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  p-4 mb-4">
             <BallInput
               onBallClick={handleBallClick}
               onExtrasClick={handleExtrasClick}
@@ -808,13 +808,13 @@ const ScorerPage = () => {
 
             {/* Selected ball indicator */}
             {selectedBall && (
-              <div className="mt-3 p-3 bg-brand-blue/10 rounded-lg border border-brand-blue/20">
+              <div className="mt-3 p-3 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
                 <div className="text-sm text-center">
-                  <span className="font-bold text-brand-blue">
+                  <span className="font-bold text-emerald-400">
                     Selected: {selectedBall.isDeclareOne ? 'DECLARE 1 RUN' : selectedBall.type === 'run' ? `${selectedBall.runs} runs` : selectedBall.type.toUpperCase()}
                   </span>
                   {selectedBall.isDeclareOne && (
-                    <div className="mt-1 text-xs text-brand-blue/80">
+                    <div className="mt-1 text-xs text-emerald-400/80">
                       (Strike won't change)
                     </div>
                   )}
@@ -824,7 +824,7 @@ const ScorerPage = () => {
           </div>
 
           {/* Action buttons */}
-          <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg p-4">
+          <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  p-4">
             <ScorerActions
               onAction={handleAction}
               onReview={() => {}}

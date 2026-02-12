@@ -54,12 +54,12 @@ const Scoreboard = memo(({ match, innings }) => {
       {/* Live Badge + Super Over Badge */}
       {match?.status === 'live' && (
         <div className="flex items-center justify-center gap-2">
-          <span className="bg-accent-red text-white text-xs font-bold px-4 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
+          <span className="bg-red-500 text-white text-xs font-bold px-4 py-1.5 rounded-full flex items-center gap-2 ">
             <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
             LIVE
           </span>
           {match?.isSuperOver && (
-            <span className="bg-amber-500 text-[#2C2D3F] text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
+            <span className="bg-amber-500 text-[#0B0D14] text-xs font-bold px-4 py-1.5 rounded-full ">
               SUPER OVER
             </span>
           )}
@@ -70,12 +70,12 @@ const Scoreboard = memo(({ match, innings }) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-light-blue rounded-3xl p-5 shadow-card-elevated"
+        className="bg-[#141620] border border-[#1E2030] rounded-2xl p-5"
       >
         {/* Team Name & Innings */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-[#1E2030] rounded-xl flex items-center justify-center">
               <span className="text-white font-bold text-sm">
                 {battingTeam?.charAt(0)?.toUpperCase() || 'T'}
               </span>
@@ -94,7 +94,7 @@ const Scoreboard = memo(({ match, innings }) => {
         {/* Score Display */}
         <div className="flex items-end justify-between">
           <div className="flex items-baseline gap-2">
-            <span className="text-white text-5xl font-black">{score}</span>
+            <span className="text-white text-5xl font-bold">{score}</span>
             <span className="text-white/70 text-3xl font-bold">-{wickets}</span>
             <span className="text-white/50 text-sm font-medium pb-1.5">({overs}/{maxOvers})</span>
           </div>
@@ -131,10 +131,10 @@ const Scoreboard = memo(({ match, innings }) => {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-[#353647] border border-[#4A4B5E] rounded-3xl overflow-hidden"
+          className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden"
         >
           {/* Table Header */}
-          <div className="flex items-center px-4 py-2.5 bg-[#2C2D3F] border-b border-[#4A4B5E]/50">
+          <div className="flex items-center px-4 py-2.5 bg-[#0B0D14] border-b border-[#1E2030]/50">
             <span className="text-white/50 text-[11px] font-bold tracking-wider flex-1">BATTER</span>
             <div className="flex items-center">
               <span className="text-white/50 text-[11px] font-bold w-9 text-right">R</span>
@@ -146,14 +146,14 @@ const Scoreboard = memo(({ match, innings }) => {
           </div>
 
           {/* Batsmen Rows */}
-          <div className="divide-y divide-[#4A4B5E]/30">
+          <div className="divide-y divide-[#1E2030]/30">
             {allBatsmen.map((b, i) => {
               const sr = b.balls > 0 ? ((b.runs / b.balls) * 100).toFixed(1) : '0.0';
               const isActive = !b.isOut;
               return (
                 <div
                   key={i}
-                  className={`flex items-center px-4 py-3 ${isActive ? 'bg-[#3d3e52]' : ''}`}
+                  className={`flex items-center px-4 py-3 ${isActive ? 'bg-[#1A1D2E]' : ''}`}
                 >
                   <div className="flex-1 min-w-0 pr-2">
                     <div className="flex items-center gap-1.5">
@@ -184,7 +184,7 @@ const Scoreboard = memo(({ match, innings }) => {
 
           {/* Extras Row */}
           {totalExtras > 0 && (
-            <div className="flex items-center justify-between px-4 py-2.5 bg-[#2C2D3F] border-t border-[#4A4B5E]/50">
+            <div className="flex items-center justify-between px-4 py-2.5 bg-[#0B0D14] border-t border-[#1E2030]/50">
               <span className="text-white/50 text-xs font-medium">Extras</span>
               <div className="flex items-center gap-3">
                 <span className="text-white/30 text-[10px]">
@@ -196,7 +196,7 @@ const Scoreboard = memo(({ match, innings }) => {
           )}
 
           {/* Total Row */}
-          <div className="flex items-center justify-between px-4 py-2.5 bg-[#2C2D3F] border-t border-[#4A4B5E]/50">
+          <div className="flex items-center justify-between px-4 py-2.5 bg-[#0B0D14] border-t border-[#1E2030]/50">
             <span className="text-white/70 text-xs font-bold">Total</span>
             <div className="flex items-center gap-2">
               <span className="text-white font-bold text-sm">
@@ -214,10 +214,10 @@ const Scoreboard = memo(({ match, innings }) => {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="bg-[#353647] border border-[#4A4B5E] rounded-3xl overflow-hidden"
+          className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden"
         >
           {/* Table Header */}
-          <div className="flex items-center px-4 py-2.5 bg-[#2C2D3F] border-b border-[#4A4B5E]/50">
+          <div className="flex items-center px-4 py-2.5 bg-[#0B0D14] border-b border-[#1E2030]/50">
             <span className="text-white/50 text-[11px] font-bold tracking-wider flex-1">BOWLER</span>
             <div className="flex items-center">
               <span className="text-white/50 text-[11px] font-bold w-9 text-right">O</span>
@@ -229,13 +229,13 @@ const Scoreboard = memo(({ match, innings }) => {
           </div>
 
           {/* Bowler Rows */}
-          <div className="divide-y divide-[#4A4B5E]/30">
+          <div className="divide-y divide-[#1E2030]/30">
             {bowlersList.map((b, i) => {
               const isCurrent = currentBowler?.name?.trim().toLowerCase() === b.name?.trim().toLowerCase();
               return (
                 <div
                   key={i}
-                  className={`flex items-center px-4 py-3 ${isCurrent ? 'bg-[#3d3e52]' : ''}`}
+                  className={`flex items-center px-4 py-3 ${isCurrent ? 'bg-[#1A1D2E]' : ''}`}
                 >
                   <div className="flex items-center gap-1.5 flex-1 min-w-0 pr-2">
                     <span className={`text-sm font-semibold truncate ${isCurrent ? 'text-white' : 'text-white/70'}`}>

@@ -13,9 +13,9 @@ const CurrentBowler = ({ bowler }) => {
   };
 
   return (
-    <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg overflow-hidden">
+    <div className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 bg-bg-cardLight border-b border-[#4A4B5E]/30">
+      <div className="px-4 py-3 bg-[#0F1118] border-b border-[#1E2030]/30">
         <h3 className="font-bold text-white text-sm">
           Current Bowler
         </h3>
@@ -27,7 +27,7 @@ const CurrentBowler = ({ bowler }) => {
           <span className="font-bold text-white text-base">
             {currentBowler.name}
           </span>
-          <div className="text-2xl font-black font-mono text-white">
+          <div className="text-2xl font-bold font-mono text-white">
             {currentBowler.wickets}/{currentBowler.runs}
           </div>
         </div>
@@ -43,7 +43,7 @@ const CurrentBowler = ({ bowler }) => {
           </div>
           <div className="flex flex-col ml-auto">
             <span className="text-white/70">Economy</span>
-            <span className="font-bold text-brand-blue">{currentBowler.economy.toFixed(2)}</span>
+            <span className="font-bold text-emerald-400">{currentBowler.economy.toFixed(2)}</span>
           </div>
         </div>
       </div>

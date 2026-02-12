@@ -17,7 +17,7 @@ const InningsBreak = ({ match, innings, onStartNextInnings, isSuperOver = false 
   const oversText = isSuperOver ? '1 over' : `${match?.overs} overs`;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#1A1B2E] flex items-center justify-center p-5 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-[#0B0D14] flex items-center justify-center p-5 overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -31,14 +31,14 @@ const InningsBreak = ({ match, innings, onStartNextInnings, isSuperOver = false 
           transition={{ delay: 0.2 }}
           className="text-center mb-6"
         >
-          <div className={`inline-flex items-center gap-2 px-6 py-3 ${isSuperOver ? 'bg-amber-500/20 border-2 border-amber-500' : 'bg-[#8BC9E8]/20 border-2 border-[#8BC9E8]'} rounded-full`}>
-            <svg className={`w-5 h-5 ${isSuperOver ? 'text-amber-400' : 'text-[#8BC9E8]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className={`inline-flex items-center gap-2 px-6 py-3 ${isSuperOver ? 'bg-amber-500/20 border-2 border-amber-500' : 'bg-[emerald-400]/20 border-2 border-[emerald-400]'} rounded-full`}>
+            <svg className={`w-5 h-5 ${isSuperOver ? 'text-amber-400' : 'text-[emerald-400]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isSuperOver
                 ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               }
             </svg>
-            <span className={`${isSuperOver ? 'text-amber-400' : 'text-[#8BC9E8]'} font-bold text-lg`}>{badgeText}</span>
+            <span className={`${isSuperOver ? 'text-amber-400' : 'text-[emerald-400]'} font-bold text-lg`}>{badgeText}</span>
           </div>
         </motion.div>
 
@@ -47,18 +47,18 @@ const InningsBreak = ({ match, innings, onStartNextInnings, isSuperOver = false 
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="bg-[#353647] border border-[#4A4B5E] rounded-[28px] overflow-hidden mb-5"
+          className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden mb-5"
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#8BC9E8] to-[#6BA8C8] px-6 py-4">
+          <div className="bg-gradient-to-r from-[emerald-400] to-[emerald-500] px-6 py-4">
             <h2 className="text-white font-bold text-xl">{headerText}</h2>
             <p className="text-white/80 text-sm mt-1">{battingTeam}</p>
           </div>
 
           {/* Score */}
-          <div className="p-8 text-center border-b border-[#4A4B5E]/30">
+          <div className="p-8 text-center border-b border-[#1E2030]/30">
             <div className="flex items-end justify-center gap-2 mb-2">
-              <span className="text-7xl font-black text-white">{innings?.totalRuns ?? 0}</span>
+              <span className="text-7xl font-bold text-white">{innings?.totalRuns ?? 0}</span>
               <span className="text-5xl font-bold text-white/70">/</span>
               <span className="text-5xl font-bold text-white">{innings?.totalWickets ?? 0}</span>
             </div>
@@ -68,10 +68,10 @@ const InningsBreak = ({ match, innings, onStartNextInnings, isSuperOver = false 
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 divide-x divide-[#4A4B5E]/30">
+          <div className="grid grid-cols-2 divide-x divide-[#1E2030]/30">
             <div className="p-5 text-center">
               <p className="text-sm text-white/50 mb-1">Run Rate</p>
-              <p className="text-2xl font-bold text-[#8BC9E8]">{innings?.runRate?.toFixed(2) || '0.00'}</p>
+              <p className="text-2xl font-bold text-[emerald-400]">{innings?.runRate?.toFixed(2) || '0.00'}</p>
             </div>
             <div className="p-5 text-center">
               <p className="text-sm text-white/50 mb-1">Extras</p>
@@ -85,11 +85,11 @@ const InningsBreak = ({ match, innings, onStartNextInnings, isSuperOver = false 
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="bg-gradient-to-r from-[#8BC9E8] to-[#6BA8C8] rounded-[28px] p-8 text-center mb-6"
+          className="bg-gradient-to-r from-[emerald-400] to-[emerald-500] rounded-2xl p-8 text-center mb-6"
         >
           <p className="text-white/80 text-sm font-semibold mb-2">TARGET FOR {bowlingTeam?.toUpperCase()}</p>
           <div className="flex items-center justify-center gap-3">
-            <span className="text-6xl font-black text-white">{target}</span>
+            <span className="text-6xl font-bold text-white">{target}</span>
             <div className="text-left">
               <p className="text-white text-sm">runs</p>
               <p className="text-white/80 text-xs">in {oversText}</p>
@@ -109,7 +109,7 @@ const InningsBreak = ({ match, innings, onStartNextInnings, isSuperOver = false 
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={onStartNextInnings}
-              className={`${isSuperOver ? 'bg-amber-500' : 'bg-[#8BC9E8]'} text-[#2C2D3F] rounded-full py-4 px-12 font-bold text-lg shadow-xl active:shadow-lg transition-all`}
+              className={`${isSuperOver ? 'bg-amber-500' : 'bg-white'} text-[#0B0D14] rounded-2xl py-4 px-12 font-semibold text-base transition-all active:scale-[0.98]`}
             >
               {buttonText}
             </motion.button>

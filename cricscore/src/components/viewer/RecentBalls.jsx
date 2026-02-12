@@ -76,7 +76,7 @@ const RecentBalls = ({ balls = [], partnership = { runs: 0, balls: 0 }, currentI
   };
 
   const getBallStyle = (type) => {
-    const baseStyle = "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs shadow-sm";
+    const baseStyle = "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs ";
 
     switch (type) {
       case 'wicket':
@@ -84,24 +84,24 @@ const RecentBalls = ({ balls = [], partnership = { runs: 0, balls: 0 }, currentI
       case 'six':
         return `${baseStyle} bg-green-500 text-white`;
       case 'four':
-        return `${baseStyle} bg-[#8BC9E8] text-white`;
+        return `${baseStyle} bg-emerald-400 text-white`;
       case 'wide':
       case 'noball':
         return `${baseStyle} bg-yellow-500 text-white`;
       case 'wide-declare':
       case 'noball-declare':
-        return `${baseStyle} bg-yellow-500 text-white border-2 border-[#8BC9E8]`;  // Yellow with blue border for declare 1
+        return `${baseStyle} bg-yellow-500 text-white border-2 border-emerald-400`;  // Yellow with blue border for declare 1
       case 'declare-one':
-        return `${baseStyle} bg-[#8BC9E8] text-white border-2 border-white`;  // Special style for D1
+        return `${baseStyle} bg-emerald-400 text-white border-2 border-white`;  // Special style for D1
       case 'dot':
-        return `${baseStyle} bg-[#4A4B5E] text-white`;
+        return `${baseStyle} bg-[#1E2030] text-white`;
       default:
-        return `${baseStyle} bg-[#353647] border-2 border-[#4A4B5E] text-white`;
+        return `${baseStyle} bg-[#141620] border-2 border-[#1E2030] text-white`;
     }
   };
 
   return (
-    <div className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg p-4">
+    <div className="bg-[#141620] border border-[#1E2030] rounded-2xl  p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-white text-sm">
@@ -141,9 +141,9 @@ const RecentBalls = ({ balls = [], partnership = { runs: 0, balls: 0 }, currentI
           </div>
 
           {/* Over runs - calculate from actual balls */}
-          <div className="mt-3 pt-3 border-t border-[#4A4B5E]/30 text-center">
+          <div className="mt-3 pt-3 border-t border-[#1E2030]/30 text-center">
             <span className="text-xs text-white/70">
-              Runs from over: <span className="font-bold text-[#8BC9E8]">
+              Runs from over: <span className="font-bold text-emerald-400">
                 {recentBalls.reduce((sum, ball) => {
                   // Total runs = batsman runs + extra runs
                   const batsmanRuns = ball.runs || 0;

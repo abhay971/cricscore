@@ -84,7 +84,7 @@ const WicketCelebration = ({ dismissalType = 'bowled', batsman, onComplete }) =>
         >
           {/* WICKET text */}
           <motion.h1
-            className="text-8xl md:text-9xl font-display font-black text-accent-red mb-4"
+            className="text-8xl md:text-9xl font-bold text-red-500 mb-4"
             style={{ textShadow: '0 0 30px rgba(220, 20, 60, 0.8)' }}
             animate={{
               scale: [1, 1.1, 1],
@@ -108,7 +108,7 @@ const WicketCelebration = ({ dismissalType = 'bowled', batsman, onComplete }) =>
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="text-2xl md:text-3xl font-display text-neutral-white"
+            className="text-2xl md:text-3xl text-white"
           >
             <p className="capitalize">{batsman} - {dismissalType}</p>
           </motion.div>
@@ -134,7 +134,7 @@ const WicketCelebration = ({ dismissalType = 'bowled', batsman, onComplete }) =>
         {[0, 1, 2].map((i) => (
           <motion.div
             key={i}
-            className="absolute w-32 h-32 rounded-full border-4 border-accent-red"
+            className="absolute w-32 h-32 rounded-full border-4 border-red-500"
             initial={{ scale: 0, opacity: 1 }}
             animate={{
               scale: [0, 3, 5],

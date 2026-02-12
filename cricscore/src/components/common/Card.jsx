@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 
 /**
- * Professional Card Component
- * Clean white elevated cards matching reference design
+ * Card Component
+ * Dark elevated cards matching premium theme
  */
 const Card = ({
   children,
@@ -14,11 +14,11 @@ const Card = ({
   ...props
 }) => {
   const variants = {
-    default: 'bg-bg-card shadow-card',
-    elevated: 'bg-bg-card shadow-card-elevated',
-    outline: 'bg-bg-card border border-[#4A4B5E]',
+    default: 'bg-[#141620] border border-[#1E2030]',
+    elevated: 'bg-[#141620] border border-[#1E2030]',
+    outline: 'bg-[#141620] border border-[#1E2030]',
     transparent: 'bg-transparent',
-    dark: 'bg-gray-800 text-text-onDark'
+    dark: 'bg-[#0F1118] border border-[#1E2030]'
   };
 
   const paddings = {
@@ -35,8 +35,8 @@ const Card = ({
       className={`
         ${variants[variant]}
         ${paddings[padding]}
-        rounded-card
-        ${hover ? 'cursor-pointer transition-shadow duration-200 hover:shadow-card-hover' : ''}
+        rounded-2xl
+        ${hover ? 'cursor-pointer transition-colors duration-200 hover:border-white/20' : ''}
         ${className}
       `}
       initial={{ opacity: 0, y: 10 }}

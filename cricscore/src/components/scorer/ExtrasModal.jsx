@@ -56,14 +56,14 @@ const ExtrasModal = ({ isOpen, onClose, onSubmit, extraType = 'wide' }) => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="bg-[#353647] border border-[#4A4B5E] rounded-[24px] shadow-lg-elevated w-full max-w-md"
+          className="bg-[#141620] border border-[#1E2030] rounded-2xl  w-full max-w-md"
         >
-          <div className="p-5 border-b border-[#4A4B5E]/30">
+          <div className="p-5 border-b border-[#1E2030]/30">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-white">Record Extra</h2>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-lg hover:bg-[#353647] flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-lg hover:bg-[#141620] flex items-center justify-center transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -85,8 +85,8 @@ const ExtrasModal = ({ isOpen, onClose, onSubmit, extraType = 'wide' }) => {
                     onClick={() => handleTypeChange(type.value)}
                     className={`px-4 py-3 rounded-lg border-2 font-semibold transition-all ${
                       extrasData.type === type.value
-                        ? 'border-brand-blue bg-brand-blue text-white'
-                        : 'border-[#4A4B5E] bg-[#2C2D3F] text-white hover:border-brand-blue'
+                        ? 'border-white bg-white text-[#0B0D14]'
+                        : 'border-[#1E2030] bg-[#0F1118] text-white hover:border-white/30'
                     }`}
                   >
                     {type.label}
@@ -95,8 +95,8 @@ const ExtrasModal = ({ isOpen, onClose, onSubmit, extraType = 'wide' }) => {
               </div>
             </div>
 
-            <div className="bg-[#2C2D3F] rounded-lg p-4">
-              <div className="text-sm text-text-secondary mb-2">
+            <div className="bg-[#0F1118] rounded-lg p-4">
+              <div className="text-sm text-white/50 mb-2">
                 {extrasData.type === 'wide' && 'Wide + runs scored (if any)'}
                 {extrasData.type === 'noball' && 'No Ball + runs scored (if any)'}
                 {extrasData.type === 'bye' && 'Byes run by batsmen'}
@@ -115,9 +115,9 @@ const ExtrasModal = ({ isOpen, onClose, onSubmit, extraType = 'wide' }) => {
                 value={extrasData.additionalRuns}
                 onChange={(e) => setExtrasData({ ...extrasData, additionalRuns: parseInt(e.target.value) || 0 })}
                 placeholder="0"
-                className="w-full px-4 py-3 border border-[#4A4B5E] rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue text-lg font-bold text-center"
+                className="w-full px-4 py-3 border border-[#1E2030] rounded-lg focus:outline-none focus:ring-2 focus:ring-white/20 text-lg font-bold text-center"
               />
-              <p className="text-xs text-text-secondary mt-1 text-center">
+              <p className="text-xs text-white/50 mt-1 text-center">
                 Runs scored after the extra
               </p>
             </div>
@@ -125,9 +125,9 @@ const ExtrasModal = ({ isOpen, onClose, onSubmit, extraType = 'wide' }) => {
             <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-white">Total Runs:</span>
-                <span className="text-2xl font-bold text-brand-blue">{totalRuns}</span>
+                <span className="text-2xl font-bold text-emerald-400">{totalRuns}</span>
               </div>
-              <div className="text-xs text-text-secondary mt-1">
+              <div className="text-xs text-white/50 mt-1">
                 {extrasData.type === 'wide' || extrasData.type === 'noball' 
                   ? 'Extra ball will be bowled' 
                   : 'Ball counts in over'
