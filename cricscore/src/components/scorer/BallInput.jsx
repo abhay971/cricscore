@@ -12,7 +12,7 @@ const BallInput = ({ onBallClick, onExtrasClick, onWicketClick, onDeclareOneClic
   const isRunSelected = (num) =>
     selectedBall?.runs === num && selectedBall?.type === 'run';
 
-  const selectedStyle = 'bg-white text-[#0B0D14] border-white ring-2 ring-white/50';
+  const selectedStyle = '!bg-white !text-[#0B0D14] !border-white ring-2 ring-white/50';
 
   return (
     <div className="space-y-3">
