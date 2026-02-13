@@ -95,7 +95,7 @@ const ViewerPage = () => {
     }
   }, [matchId, fetchMatch, setRecentBalls]);
 
-  if (loading) {
+  if (loading && !match) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0B0D14]">
         <div className="text-center">

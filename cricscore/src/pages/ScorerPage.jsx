@@ -572,7 +572,7 @@ const ScorerPage = () => {
     }
   };
 
-  if (loading) {
+  if (loading && !match) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-white text-center">
@@ -804,6 +804,7 @@ const ScorerPage = () => {
               onExtrasClick={handleExtrasClick}
               onWicketClick={handleWicketClick}
               onDeclareOneClick={match?.customRules?.declareOneEnabled ? handleDeclareOneClick : null}
+              selectedBall={selectedBall}
             />
 
             {/* Selected ball indicator */}

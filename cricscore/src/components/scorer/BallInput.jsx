@@ -4,10 +4,15 @@ import { Button } from '../common';
  * Ball Input Component
  * Grid layout of number buttons (0-6, WKT, extras, Declare 1)
  */
-const BallInput = ({ onBallClick, onExtrasClick, onWicketClick, onDeclareOneClick }) => {
+const BallInput = ({ onBallClick, onExtrasClick, onWicketClick, onDeclareOneClick, selectedBall }) => {
   const numberButtons = ['0', '1', '2', '3', '4', '5'];
   const specialButtons = ['6', 'WKT', 'WD'];
   const extraButtons = ['NB', 'BYE', 'LB'];
+
+  const isRunSelected = (num) =>
+    selectedBall?.runs === num && selectedBall?.type === 'run';
+
+  const selectedStyle = 'bg-white text-[#0B0D14] border-white ring-2 ring-white/50';
 
   return (
     <div className="space-y-3">
@@ -19,7 +24,7 @@ const BallInput = ({ onBallClick, onExtrasClick, onWicketClick, onDeclareOneClic
             variant="grid"
             size="grid"
             onClick={() => onBallClick(parseInt(num))}
-            className="min-h-[64px] text-2xl font-bold"
+            className={`min-h-[64px] text-2xl font-bold ${isRunSelected(parseInt(num)) ? selectedStyle : ''}`}
           >
             {num}
           </Button>
@@ -32,7 +37,7 @@ const BallInput = ({ onBallClick, onExtrasClick, onWicketClick, onDeclareOneClic
           variant="grid"
           size="grid"
           onClick={() => onBallClick(6)}
-          className="min-h-[64px] text-2xl font-bold"
+          className={`min-h-[64px] text-2xl font-bold ${isRunSelected(6) ? selectedStyle : ''}`}
         >
           6
         </Button>
