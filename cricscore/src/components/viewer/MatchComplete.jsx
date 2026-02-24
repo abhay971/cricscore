@@ -1,19 +1,20 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 /**
- * Match Complete Component
- * Cricbuzz-style scorecards with full batting & bowling tables
+ * Match Complete Component — Redesigned
+ * Clean hero, side-by-side score summary, tabbed innings scorecards, polished POTM
  */
 const MatchComplete = ({ match, allInnings }) => {
   const innings1 = allInnings?.[0];
   const innings2 = allInnings?.[1];
-  const innings3 = allInnings?.[2]; // SO innings 1
-  const innings4 = allInnings?.[3]; // SO innings 2
+  const innings3 = allInnings?.[2];
+  const innings4 = allInnings?.[3];
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState(0);
 
-  // Resolve team names using toss data (handles corrupted old data + trimming)
+  // Resolve team names
   const resolveName = (name) => {
     const trimmed = name?.trim();
     if (trimmed === 'team1') return match?.team1?.name || name;
@@ -27,9 +28,14 @@ const MatchComplete = ({ match, allInnings }) => {
     ? tossWinnerName
     : (tossWinnerName === t1 ? t2 : t1);
   const battedSecond = battedFirst === t1 ? t2 : t1;
-
   const team1Name = battedFirst || match?.team1?.name || 'Team 1';
   const team2Name = battedSecond || match?.team2?.name || 'Team 2';
+
+  const winnerName = resolveName(match?.winner);
+  const isTie = !match?.winner || match.winner === 'Tie';
+  let resultText = match?.result || '';
+  resultText = resultText.replace(/\bteam1\b/g, match?.team1?.name || 'team1');
+  resultText = resultText.replace(/\bteam2\b/g, match?.team2?.name || 'team2');
 
   // Auto-calculate Player of the Match
   const playerOfMatch = useMemo(() => {
@@ -50,20 +56,15 @@ const MatchComplete = ({ match, allInnings }) => {
           existing.score += batScore;
         } else {
           candidates.push({
-            name: b.name,
-            team: battingTeamName,
-            runs: b.runs || 0,
-            balls: b.balls || 0,
-            fours: b.fours || 0,
-            sixes: b.sixes || 0,
-            strikeRate: b.balls > 0 ? ((b.runs / b.balls) * 100).toFixed(1) : '0.0',
+            name: b.name, team: battingTeamName,
+            runs: b.runs || 0, balls: b.balls || 0,
+            fours: b.fours || 0, sixes: b.sixes || 0,
             score: batScore
           });
         }
       });
     });
 
-    // Also consider bowling performances
     allInn.forEach((inn) => {
       if (!inn?.bowlers) return;
       const bowlingTeamName = inn.bowlingTeam?.trim() === match?.team1?.name?.trim() ? team1Name : team2Name;
@@ -73,17 +74,12 @@ const MatchComplete = ({ match, allInnings }) => {
         if (existing) {
           existing.score += bowlScore;
           existing.wickets = (existing.wickets || 0) + (b.wickets || 0);
-          existing.bowlingFigures = `${existing.wickets}/${(existing.bowlingRuns || 0) + (b.runs || 0)}`;
           existing.bowlingRuns = (existing.bowlingRuns || 0) + (b.runs || 0);
+          existing.bowlingFigures = `${existing.wickets}/${existing.bowlingRuns}`;
         } else {
           candidates.push({
-            name: b.name,
-            team: bowlingTeamName,
-            runs: 0,
-            balls: 0,
-            fours: 0,
-            sixes: 0,
-            strikeRate: '0.0',
+            name: b.name, team: bowlingTeamName,
+            runs: 0, balls: 0, fours: 0, sixes: 0,
             wickets: b.wickets || 0,
             bowlingFigures: `${b.wickets || 0}/${b.runs || 0}`,
             bowlingRuns: b.runs || 0,
@@ -98,391 +94,261 @@ const MatchComplete = ({ match, allInnings }) => {
     return candidates[0];
   }, [innings1, innings2, innings3, innings4, team1Name, team2Name, match]);
 
-  const getWinnerInfo = () => {
-    if (!match?.winner || match.winner === 'Tie') {
-      return { text: 'Match Tied!', subtitle: match?.result || 'What a contest!' };
-    }
-    const winnerName = resolveName(match.winner);
-    let resultText = match.result || `${winnerName} won!`;
-    resultText = resultText.replace(/\bteam1\b/g, match?.team1?.name || 'team1');
-    resultText = resultText.replace(/\bteam2\b/g, match?.team2?.name || 'team2');
-    return { text: winnerName, subtitle: resultText };
-  };
+  // Build tabs: 1st Innings, 2nd Innings (+ Super Over if applicable)
+  const tabs = [
+    { label: '1st Innings', batting: innings1, bowlingTeam: team2Name },
+    { label: '2nd Innings', batting: innings2, bowlingTeam: team1Name },
+    ...(match?.isSuperOver && innings3 ? [
+      { label: 'Super Over 1', batting: innings3, bowlingTeam: innings3?.bowlingTeam },
+      ...(innings4 ? [{ label: 'Super Over 2', batting: innings4, bowlingTeam: innings4?.bowlingTeam }] : [])
+    ] : [])
+  ].filter(t => t.batting);
 
-  const winnerInfo = getWinnerInfo();
-
-  // Reusable Cricbuzz-style batting scorecard
-  const BattingCard = ({ innings, teamName, inningsLabel, delay }) => {
-    if (!innings?.currentBatsmen?.length) return null;
-    const extras = innings?.extras || {};
-    const totalExtras = (extras.wides || 0) + (extras.noBalls || 0) + (extras.byes || 0) + (extras.legByes || 0);
-
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay }}
-        className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden"
-      >
-        {/* Section Title */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[#0B0D14]">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-xl bg-[emerald-400]/20 flex items-center justify-center">
-              <span className="text-[emerald-400] font-bold text-[10px]">
-                {teamName?.charAt(0)?.toUpperCase() || 'T'}
-              </span>
-            </div>
-            <span className="text-white font-bold text-sm">{teamName}</span>
-          </div>
-          <span className="text-white/40 text-[10px] font-medium tracking-wider">{inningsLabel}</span>
-        </div>
-
-        {/* Table Header */}
-        <div className="flex items-center px-4 py-2 border-b border-[#1E2030]/50 bg-[#0F1118]">
-          <span className="text-white/40 text-[11px] font-bold tracking-wider flex-1">BATTER</span>
-          <div className="flex items-center">
-            <span className="text-white/40 text-[11px] font-bold w-9 text-right">R</span>
-            <span className="text-white/40 text-[11px] font-bold w-9 text-right">B</span>
-            <span className="text-white/40 text-[11px] font-bold w-9 text-right">4s</span>
-            <span className="text-white/40 text-[11px] font-bold w-9 text-right">6s</span>
-            <span className="text-white/40 text-[11px] font-bold w-14 text-right">SR</span>
-          </div>
-        </div>
-
-        {/* Batsmen Rows */}
-        <div className="divide-y divide-[#1E2030]/30">
-          {innings.currentBatsmen.map((b, i) => {
-            const sr = b.balls > 0 ? ((b.runs / b.balls) * 100).toFixed(1) : '0.0';
-            return (
-              <div key={i} className={`flex items-center px-4 py-3 ${!b.isOut ? 'bg-[#1A1D2E]' : ''}`}>
-                <div className="flex-1 min-w-0 pr-2">
-                  <span className={`text-sm font-semibold truncate block ${!b.isOut ? 'text-white' : 'text-white/70'}`}>
-                    {b.name}
-                  </span>
-                  <p className={`text-[10px] mt-0.5 ${b.isOut ? 'text-red-400/60' : 'text-green-400/60'}`}>
-                    {b.isOut ? (b.dismissalType || 'out') : 'not out'}
-                  </p>
-                </div>
-                <div className="flex items-center shrink-0">
-                  <span className={`text-sm w-9 text-right font-bold ${!b.isOut ? 'text-white' : 'text-white/70'}`}>
-                    {b.runs || 0}
-                  </span>
-                  <span className="text-white/40 text-xs w-9 text-right">{b.balls || 0}</span>
-                  <span className="text-white/40 text-xs w-9 text-right">{b.fours || 0}</span>
-                  <span className="text-white/40 text-xs w-9 text-right">{b.sixes || 0}</span>
-                  <span className="text-white/30 text-[11px] w-14 text-right">{sr}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Extras */}
-        {totalExtras > 0 && (
-          <div className="flex items-center justify-between px-4 py-2.5 bg-[#0B0D14] border-t border-[#1E2030]/50">
-            <span className="text-white/50 text-xs font-medium">Extras</span>
-            <div className="flex items-center gap-3">
-              <span className="text-white/30 text-[10px]">
-                (w {extras.wides || 0}, nb {extras.noBalls || 0}, b {extras.byes || 0}, lb {extras.legByes || 0})
-              </span>
-              <span className="text-white font-bold text-sm">{totalExtras}</span>
-            </div>
-          </div>
-        )}
-
-        {/* Total */}
-        <div className="flex items-center justify-between px-4 py-2.5 bg-[#0B0D14] border-t border-[#1E2030]/50">
-          <span className="text-white/70 text-xs font-bold">Total</span>
-          <div className="flex items-center gap-2">
-            <span className="text-white font-bold text-sm">
-              {innings.totalRuns ?? 0}/{innings.totalWickets ?? 0}
-            </span>
-            <span className="text-white/40 text-[10px]">({innings.totalOvers ?? 0} ov)</span>
-          </div>
-        </div>
-      </motion.div>
-    );
-  };
-
-  // Reusable Cricbuzz-style bowling scorecard
-  const BowlingCard = ({ innings, teamName, delay }) => {
-    const bowlers = innings?.bowlers || [];
-    if (bowlers.length === 0) return null;
-
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay }}
-        className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden"
-      >
-        {/* Section Title */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[#0B0D14]">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-xl bg-amber-500/20 flex items-center justify-center">
-              <span className="text-amber-400 font-bold text-[10px]">
-                {teamName?.charAt(0)?.toUpperCase() || 'T'}
-              </span>
-            </div>
-            <span className="text-white font-bold text-sm">{teamName}</span>
-          </div>
-          <span className="text-white/40 text-[10px] font-medium tracking-wider">BOWLING</span>
-        </div>
-
-        {/* Table Header */}
-        <div className="flex items-center px-4 py-2 border-b border-[#1E2030]/50 bg-[#0F1118]">
-          <span className="text-white/40 text-[11px] font-bold tracking-wider flex-1">BOWLER</span>
-          <div className="flex items-center">
-            <span className="text-white/40 text-[11px] font-bold w-9 text-right">O</span>
-            <span className="text-white/40 text-[11px] font-bold w-9 text-right">M</span>
-            <span className="text-white/40 text-[11px] font-bold w-9 text-right">R</span>
-            <span className="text-white/40 text-[11px] font-bold w-9 text-right">W</span>
-            <span className="text-white/40 text-[11px] font-bold w-14 text-right">ECON</span>
-          </div>
-        </div>
-
-        {/* Bowler Rows */}
-        <div className="divide-y divide-[#1E2030]/30">
-          {bowlers.map((b, i) => (
-            <div key={i} className="flex items-center px-4 py-3">
-              <span className="text-white/70 text-sm font-semibold truncate flex-1 min-w-0 pr-2">
-                {b.name}
-              </span>
-              <div className="flex items-center shrink-0">
-                <span className="text-white/40 text-xs w-9 text-right">{b.overs || 0}</span>
-                <span className="text-white/40 text-xs w-9 text-right">{b.maidens || 0}</span>
-                <span className="text-white/70 text-sm w-9 text-right font-bold">{b.runs || 0}</span>
-                <span className="text-white/70 text-sm w-9 text-right font-bold">{b.wickets || 0}</span>
-                <span className="text-white/30 text-[11px] w-14 text-right">
-                  {typeof b.economy === 'number' ? b.economy.toFixed(1) : '0.0'}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-    );
+  const getInitials = (name) => {
+    if (!name) return '?';
+    const parts = name.trim().split(' ');
+    return parts.length >= 2
+      ? (parts[0][0] + parts[1][0]).toUpperCase()
+      : parts[0][0].toUpperCase();
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0D14] pb-8 overflow-y-auto">
-      {/* Confetti particles */}
+    <div className="min-h-screen bg-[#0B0D14] pb-10 overflow-y-auto">
+      {/* Confetti */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(18)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 rounded-full"
-            style={{
-              background: ['#FFD700', '#FF6B6B', '#34D399', '#4ADE80', '#F472B6'][i % 5]
-            }}
-            initial={{
-              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 400),
-              y: -10,
-              opacity: 0.8
-            }}
-            animate={{
-              y: (typeof window !== 'undefined' ? window.innerHeight : 800) + 20,
-              opacity: 0,
-              rotate: 360 * (Math.random() > 0.5 ? 1 : -1)
-            }}
-            transition={{
-              duration: 4 + Math.random() * 3,
-              delay: Math.random() * 3,
-              repeat: Infinity,
-              ease: 'linear'
-            }}
+            className="absolute w-1.5 h-1.5 rounded-full"
+            style={{ background: ['#FFD700', '#FF6B6B', '#34D399', '#60A5FA', '#F472B6'][i % 5] }}
+            initial={{ x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 400), y: -10, opacity: 0.9 }}
+            animate={{ y: (typeof window !== 'undefined' ? window.innerHeight : 800) + 20, opacity: 0, rotate: 360 * (Math.random() > 0.5 ? 1 : -1) }}
+            transition={{ duration: 4 + Math.random() * 3, delay: Math.random() * 3, repeat: Infinity, ease: 'linear' }}
           />
         ))}
       </div>
 
-      <div className="relative z-10 max-w-lg mx-auto px-4 pt-8 space-y-4">
-        {/* Trophy */}
+      <div className="relative z-10 max-w-lg mx-auto px-4 pt-10 space-y-4">
+
+        {/* ── Hero ── */}
         <motion.div
-          initial={{ scale: 0, rotate: -20 }}
+          initial={{ scale: 0, rotate: -15 }}
           animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
-          className="text-center mb-2"
+          transition={{ type: 'spring', stiffness: 220, delay: 0.1 }}
+          className="flex flex-col items-center gap-3"
         >
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full  shadow-yellow-500/30">
+          <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full flex items-center justify-center shadow-lg shadow-amber-500/30">
             <svg className="w-10 h-10 text-amber-900" fill="currentColor" viewBox="0 0 24 24">
               <path d="M5 3h14c.6 0 1 .4 1 1v2c0 3.3-2.7 6-6 6h-.8c-.5 1.5-1.5 2.7-2.8 3.5.2.3.4.6.6 1 .3-.1.7-.2 1-.2 1.7 0 3 1.3 3 3v1H8v-1c0-1.7 1.3-3 3-3 .3 0 .7.1 1 .2.2-.4.4-.7.6-1C11.2 14.7 10.2 13.5 9.8 12H9c-3.3 0-6-2.7-6-6V4c0-.6.4-1 1-1zm1 2v1c0 2.2 1.8 4 4 4h4c2.2 0 4-1.8 4-4V5H6z"/>
             </svg>
           </div>
+          <div className="text-center">
+            <h1 className="text-2xl font-extrabold text-white tracking-widest">MATCH COMPLETE</h1>
+            <div className="inline-flex items-center gap-2 mt-1.5 px-3 py-1 bg-white/8 rounded-full">
+              <span className="text-white/50 text-xs font-medium">{match?.matchType || 'Custom'}</span>
+              <span className="w-1 h-1 bg-white/30 rounded-full" />
+              <span className="text-white/50 text-xs font-medium">{match?.overs} Overs</span>
+            </div>
+          </div>
         </motion.div>
 
-        {/* Match Complete Title */}
+        {/* ── Winner Banner ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="text-center"
+          className={`rounded-2xl p-5 text-center ${isTie
+            ? 'bg-gradient-to-br from-blue-500/20 to-blue-600/10 border border-blue-500/30'
+            : 'bg-gradient-to-br from-amber-500/20 to-yellow-600/10 border border-amber-500/30'}`}
         >
-          <h1 className="text-3xl font-bold text-white tracking-tight mb-2">MATCH COMPLETE</h1>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur rounded-full">
-            <span className="text-white/70 text-sm font-medium">{match?.matchType || 'Custom'}</span>
-            <span className="w-1 h-1 bg-white/40 rounded-full" />
-            <span className="text-white/70 text-sm font-medium">{match?.overs} Overs</span>
-          </div>
-        </motion.div>
-
-        {/* Winner Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="bg-gradient-to-br from-amber-500/20 to-yellow-600/10 border border-amber-500/30 rounded-2xl p-6"
-        >
-          <p className="text-amber-400 text-xs font-bold tracking-widest text-center mb-3">WINNER</p>
-          <h2 className="text-2xl font-bold text-white text-center mb-1">
-            {winnerInfo.text}
+          <p className={`text-[10px] font-bold tracking-[0.2em] mb-2 ${isTie ? 'text-blue-400' : 'text-amber-400'}`}>
+            {isTie ? 'MATCH TIED' : 'WINNER'}
+          </p>
+          <h2 className="text-2xl font-extrabold text-white mb-1">
+            {isTie ? 'What a game!' : winnerName}
           </h2>
-          <p className="text-amber-300/80 text-sm font-medium text-center">
-            {winnerInfo.subtitle}
+          <p className={`text-sm font-medium ${isTie ? 'text-blue-300/80' : 'text-amber-300/80'}`}>
+            {resultText}
           </p>
         </motion.div>
 
-        {/* Score Summary */}
+        {/* ── Score Summary: Side by Side ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="bg-[#141620] border border-[#1E2030] rounded-2xl p-5"
+          transition={{ delay: 0.55 }}
+          className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden"
         >
-          {/* Team 1 Score */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[emerald-400]/20 flex items-center justify-center">
-                <span className="text-[emerald-400] font-bold text-sm">
-                  {team1Name?.charAt(0)?.toUpperCase() || 'T'}
+          <div className="grid grid-cols-2 divide-x divide-[#1E2030]">
+            {/* Team 1 (batted first) */}
+            {[
+              { name: team1Name, innings: innings1, label: '1st Innings', isWinner: !isTie && winnerName === team1Name },
+              { name: team2Name, innings: innings2, label: '2nd Innings', isWinner: !isTie && winnerName === team2Name }
+            ].map((side, idx) => (
+              <div key={idx} className={`p-4 flex flex-col items-center gap-1 relative ${side.isWinner ? 'bg-amber-500/5' : ''}`}>
+                {side.isWinner && (
+                  <div className="absolute top-2 right-2">
+                    <svg className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  </div>
+                )}
+                {/* Avatar */}
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm mb-0.5 ${idx === 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-blue-500/20 text-blue-400'}`}>
+                  {getInitials(side.name)}
+                </div>
+                <p className={`text-xs font-semibold text-center leading-tight truncate w-full text-center ${side.isWinner ? 'text-white' : 'text-white/70'}`}>
+                  {side.name}
+                </p>
+                <p className={`text-2xl font-extrabold mt-0.5 ${side.isWinner ? 'text-white' : 'text-white/60'}`}>
+                  {side.innings?.totalRuns ?? '-'}<span className="text-lg">/{side.innings?.totalWickets ?? '-'}</span>
+                </p>
+                <p className="text-white/35 text-[11px]">
+                  {side.innings?.totalOvers ?? 0}/{match?.overs} ov
+                </p>
+                <span className={`mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full ${idx === 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-blue-500/15 text-blue-400'}`}>
+                  {side.label}
                 </span>
               </div>
-              <div>
-                <p className="text-white font-semibold text-sm">{team1Name}</p>
-                <p className="text-white/50 text-xs">1st Innings</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-white font-bold text-xl">
-                {innings1?.totalRuns ?? '-'}/{innings1?.totalWickets ?? '-'}
-              </p>
-              <p className="text-white/50 text-xs">
-                ({innings1?.totalOvers ?? 0}/{match?.overs} ov)
-              </p>
-            </div>
+            ))}
           </div>
-
-          <div className="h-px bg-[#1E2030] mb-4" />
-
-          {/* Team 2 Score */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 flex items-center justify-center">
-                <span className="text-amber-400 font-bold text-sm">
-                  {team2Name?.charAt(0)?.toUpperCase() || 'T'}
-                </span>
-              </div>
-              <div>
-                <p className="text-white font-semibold text-sm">{team2Name}</p>
-                <p className="text-white/50 text-xs">2nd Innings</p>
-              </div>
+          {/* Target row */}
+          {innings2?.target && (
+            <div className="border-t border-[#1E2030] px-4 py-2 flex items-center justify-center gap-2">
+              <span className="text-white/40 text-xs">Target</span>
+              <span className="text-white font-bold text-sm">{innings2.target}</span>
+              {innings2.totalRuns >= innings2.target && (
+                <span className="text-emerald-400 text-xs font-semibold">· Achieved</span>
+              )}
             </div>
-            <div className="text-right">
-              <p className="text-white font-bold text-xl">
-                {innings2?.totalRuns ?? '-'}/{innings2?.totalWickets ?? '-'}
-              </p>
-              <p className="text-white/50 text-xs">
-                ({innings2?.totalOvers ?? 0}/{match?.overs} ov)
-              </p>
-            </div>
-          </div>
+          )}
         </motion.div>
 
-        {/* ── 1st Innings Batting Scorecard ── */}
-        <BattingCard innings={innings1} teamName={team1Name} inningsLabel="1ST BATTING" delay={0.8} />
+        {/* ── Innings Tabs ── */}
+        {tabs.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.65 }}
+            className="space-y-3"
+          >
+            {/* Tab bar */}
+            <div className="flex gap-2 bg-[#141620] border border-[#1E2030] rounded-xl p-1">
+              {tabs.map((tab, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveTab(i)}
+                  className={`flex-1 py-2 px-2 rounded-lg text-xs font-semibold transition-all ${
+                    activeTab === i
+                      ? 'bg-white text-[#0B0D14] shadow'
+                      : 'text-white/40 hover:text-white/70'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
 
-        {/* ── 1st Innings Bowling Scorecard ── */}
-        <BowlingCard innings={innings1} teamName={team2Name} delay={0.85} />
-
-        {/* ── 2nd Innings Batting Scorecard ── */}
-        <BattingCard innings={innings2} teamName={team2Name} inningsLabel="2ND BATTING" delay={0.9} />
-
-        {/* ── 2nd Innings Bowling Scorecard ── */}
-        <BowlingCard innings={innings2} teamName={team1Name} delay={0.95} />
-
-        {/* ── Super Over Scorecards ── */}
-        {match?.isSuperOver && innings3 && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.0 }}
-              className="flex items-center gap-3 py-2"
-            >
-              <div className="flex-1 h-px bg-amber-500/30" />
-              <span className="bg-amber-500 text-[#0B0D14] text-xs font-bold px-4 py-1.5 rounded-full">SUPER OVER</span>
-              <div className="flex-1 h-px bg-amber-500/30" />
-            </motion.div>
-
-            <BattingCard innings={innings3} teamName={innings3?.battingTeam || team2Name} inningsLabel="SO 1ST BATTING" delay={1.05} />
-            <BowlingCard innings={innings3} teamName={innings3?.bowlingTeam || team1Name} delay={1.1} />
-
-            {innings4 && (
-              <>
-                <BattingCard innings={innings4} teamName={innings4?.battingTeam || team1Name} inningsLabel="SO 2ND BATTING" delay={1.15} />
-                <BowlingCard innings={innings4} teamName={innings4?.bowlingTeam || team2Name} delay={1.2} />
-              </>
-            )}
-          </>
+            {/* Tab content */}
+            <AnimatePresence mode="wait">
+              {tabs[activeTab] && (
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.18 }}
+                  className="space-y-3"
+                >
+                  <BattingCard innings={tabs[activeTab].batting} teamName={tabs[activeTab].batting?.battingTeam?.trim() === match?.team1?.name?.trim() ? team1Name : team2Name} />
+                  <BowlingCard innings={tabs[activeTab].batting} teamName={tabs[activeTab].bowlingTeam} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         )}
 
-        {/* Player of the Match */}
+        {/* ── Player of the Match ── */}
         {playerOfMatch && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0 }}
-            className="bg-gradient-to-br from-[emerald-400]/10 to-[emerald-400]/5 border border-[emerald-400]/20 rounded-2xl p-5"
+            transition={{ delay: 0.75 }}
+            className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden"
           >
-            <p className="text-[emerald-400]/60 text-xs font-bold tracking-widest text-center mb-3">
-              PLAYER OF THE MATCH
-            </p>
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-[emerald-400]/20 rounded-full mb-3">
-                <span className="text-[emerald-400] font-bold text-lg">
-                  {playerOfMatch.name?.charAt(0)?.toUpperCase() || '?'}
+            {/* Header */}
+            <div className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-amber-500/15 to-transparent border-b border-[#1E2030]">
+              <svg className="w-4 h-4 text-amber-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+              <span className="text-amber-400 text-xs font-bold tracking-widest">PLAYER OF THE MATCH</span>
+            </div>
+
+            {/* Player info */}
+            <div className="flex items-center gap-4 px-4 py-4">
+              {/* Avatar */}
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/30 to-amber-600/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+                <span className="text-amber-300 font-extrabold text-xl">
+                  {getInitials(playerOfMatch.name)}
                 </span>
               </div>
-              <h3 className="text-white font-bold text-lg mb-1">{playerOfMatch.name}</h3>
-              <p className="text-white/50 text-xs mb-2">{playerOfMatch.team}</p>
-              <div className="flex items-center justify-center gap-4 flex-wrap">
-                {playerOfMatch.runs > 0 && (
-                  <div>
-                    <span className="text-white font-bold text-sm">{playerOfMatch.runs}</span>
-                    <span className="text-white/40 text-xs ml-1">({playerOfMatch.balls})</span>
-                  </div>
-                )}
-                {(playerOfMatch.fours > 0 || playerOfMatch.sixes > 0) && (
-                  <div className="text-white/40 text-xs">
-                    {playerOfMatch.fours > 0 && <span>{playerOfMatch.fours}x4 </span>}
-                    {playerOfMatch.sixes > 0 && <span>{playerOfMatch.sixes}x6</span>}
-                  </div>
-                )}
-                {playerOfMatch.bowlingFigures && (
-                  <div className="text-white/40 text-xs">
-                    Bowling: {playerOfMatch.bowlingFigures}
-                  </div>
-                )}
+
+              {/* Name + team */}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-white font-bold text-lg leading-tight truncate">
+                  {playerOfMatch.name}
+                </h3>
+                <span className={`inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                  playerOfMatch.team === team1Name
+                    ? 'bg-emerald-500/15 text-emerald-400'
+                    : 'bg-blue-500/15 text-blue-400'
+                }`}>
+                  {playerOfMatch.team}
+                </span>
               </div>
+            </div>
+
+            {/* Stats row */}
+            <div className="flex flex-wrap gap-2 px-4 pb-4">
+              {playerOfMatch.runs > 0 && (
+                <div className="flex items-center gap-1.5 bg-white/5 border border-white/8 rounded-xl px-3 py-2">
+                  <span className="text-white/40 text-xs">🏏</span>
+                  <span className="text-white font-bold text-sm">{playerOfMatch.runs}</span>
+                  <span className="text-white/40 text-xs">({playerOfMatch.balls} b)</span>
+                  {playerOfMatch.balls > 0 && (
+                    <span className="text-white/30 text-[10px] ml-1">
+                      SR {((playerOfMatch.runs / playerOfMatch.balls) * 100).toFixed(0)}
+                    </span>
+                  )}
+                </div>
+              )}
+              {(playerOfMatch.fours > 0 || playerOfMatch.sixes > 0) && (
+                <div className="flex items-center gap-2 bg-white/5 border border-white/8 rounded-xl px-3 py-2">
+                  {playerOfMatch.fours > 0 && (
+                    <span className="text-blue-400 text-xs font-semibold">{playerOfMatch.fours}×4</span>
+                  )}
+                  {playerOfMatch.sixes > 0 && (
+                    <span className="text-emerald-400 text-xs font-semibold">{playerOfMatch.sixes}×6</span>
+                  )}
+                </div>
+              )}
+              {playerOfMatch.bowlingFigures && playerOfMatch.wickets > 0 && (
+                <div className="flex items-center gap-1.5 bg-white/5 border border-white/8 rounded-xl px-3 py-2">
+                  <span className="text-white/40 text-xs">⚾</span>
+                  <span className="text-white font-bold text-sm">{playerOfMatch.bowlingFigures}</span>
+                  <span className="text-white/40 text-xs">wkts</span>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
 
-        {/* Action Button */}
+        {/* ── Back to Tournament ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.05 }}
-          className="pt-2 pb-4"
+          transition={{ delay: 0.85 }}
+          className="pt-1 pb-4"
         >
           <button
             onClick={() => navigate(`/tournament/${match?.tournamentId}`)}
@@ -491,6 +357,144 @@ const MatchComplete = ({ match, allInnings }) => {
             Back to Tournament
           </button>
         </motion.div>
+      </div>
+    </div>
+  );
+};
+
+/* ── Batting Scorecard ── */
+const BattingCard = ({ innings, teamName }) => {
+  if (!innings?.currentBatsmen?.length) return null;
+  const extras = innings?.extras || {};
+  const totalExtras = (extras.wides || 0) + (extras.noBalls || 0) + (extras.byes || 0) + (extras.legByes || 0);
+  const topScorer = [...innings.currentBatsmen].sort((a, b) => (b.runs || 0) - (a.runs || 0))[0];
+
+  return (
+    <div className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 bg-[#0F1118] border-b border-[#1E2030]">
+        <span className="text-white font-bold text-sm">{teamName}</span>
+        <span className="text-white/40 text-[10px] font-bold tracking-widest">BATTING</span>
+      </div>
+
+      {/* Column headers */}
+      <div className="flex items-center px-4 py-1.5 bg-[#0B0D14]/40">
+        <span className="text-white/30 text-[10px] font-bold tracking-wider flex-1">BATTER</span>
+        <div className="flex items-center shrink-0">
+          <span className="text-white/30 text-[10px] font-bold w-8 text-right">R</span>
+          <span className="text-white/30 text-[10px] font-bold w-8 text-right">B</span>
+          <span className="text-white/30 text-[10px] font-bold w-8 text-right">4s</span>
+          <span className="text-white/30 text-[10px] font-bold w-8 text-right">6s</span>
+          <span className="text-white/30 text-[10px] font-bold w-12 text-right">SR</span>
+        </div>
+      </div>
+
+      {/* Rows */}
+      <div className="divide-y divide-[#1E2030]/30">
+        {innings.currentBatsmen.map((b, i) => {
+          const sr = b.balls > 0 ? ((b.runs / b.balls) * 100).toFixed(1) : '0.0';
+          const isTop = !b.isOut && b.name === topScorer?.name && (b.runs || 0) > 0;
+          return (
+            <div key={i} className={`flex items-center px-4 py-2.5 ${isTop ? 'bg-amber-500/5' : ''}`}>
+              <div className="flex-1 min-w-0 pr-2">
+                <div className="flex items-center gap-1.5">
+                  <span className={`text-sm font-semibold truncate ${!b.isOut ? 'text-white' : 'text-white/60'}`}>
+                    {b.name}
+                  </span>
+                  {!b.isOut && <span className="text-amber-400 text-xs font-bold">*</span>}
+                </div>
+                <p className={`text-[10px] mt-0.5 ${b.isOut ? 'text-red-400/60' : 'text-emerald-400/60'}`}>
+                  {b.isOut ? (b.dismissalType?.replace(/_/g, ' ') || 'out') : 'not out'}
+                </p>
+              </div>
+              <div className="flex items-center shrink-0">
+                <span className={`text-sm w-8 text-right font-bold ${!b.isOut ? 'text-white' : 'text-white/60'}`}>
+                  {b.runs || 0}
+                </span>
+                <span className="text-white/40 text-xs w-8 text-right">{b.balls || 0}</span>
+                <span className="text-white/40 text-xs w-8 text-right">{b.fours || 0}</span>
+                <span className="text-white/40 text-xs w-8 text-right">{b.sixes || 0}</span>
+                <span className="text-white/30 text-[10px] w-12 text-right">{sr}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Extras + Total */}
+      <div className="border-t border-[#1E2030]/50 bg-[#0F1118]">
+        {totalExtras > 0 && (
+          <div className="flex items-center justify-between px-4 py-2 border-b border-[#1E2030]/30">
+            <span className="text-white/40 text-xs">
+              Extras <span className="text-white/25">(w {extras.wides || 0}, nb {extras.noBalls || 0}, b {extras.byes || 0}, lb {extras.legByes || 0})</span>
+            </span>
+            <span className="text-white/60 font-semibold text-sm">{totalExtras}</span>
+          </div>
+        )}
+        <div className="flex items-center justify-between px-4 py-2.5">
+          <span className="text-white/70 text-xs font-bold">Total</span>
+          <div className="flex items-center gap-2">
+            <span className="text-white font-bold">{innings.totalRuns ?? 0}/{innings.totalWickets ?? 0}</span>
+            <span className="text-white/35 text-[11px]">({innings.totalOvers ?? 0} ov)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── Bowling Scorecard ── */
+const BowlingCard = ({ innings, teamName }) => {
+  const bowlers = innings?.bowlers || [];
+  if (bowlers.length === 0) return null;
+  const topBowler = [...bowlers].sort((a, b) => (b.wickets || 0) - (a.wickets || 0))[0];
+
+  return (
+    <div className="bg-[#141620] border border-[#1E2030] rounded-2xl overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 bg-[#0F1118] border-b border-[#1E2030]">
+        <span className="text-white font-bold text-sm">{teamName}</span>
+        <span className="text-white/40 text-[10px] font-bold tracking-widest">BOWLING</span>
+      </div>
+
+      {/* Column headers */}
+      <div className="flex items-center px-4 py-1.5 bg-[#0B0D14]/40">
+        <span className="text-white/30 text-[10px] font-bold tracking-wider flex-1">BOWLER</span>
+        <div className="flex items-center shrink-0">
+          <span className="text-white/30 text-[10px] font-bold w-8 text-right">O</span>
+          <span className="text-white/30 text-[10px] font-bold w-8 text-right">M</span>
+          <span className="text-white/30 text-[10px] font-bold w-8 text-right">R</span>
+          <span className="text-white/30 text-[10px] font-bold w-8 text-right">W</span>
+          <span className="text-white/30 text-[10px] font-bold w-12 text-right">ECON</span>
+        </div>
+      </div>
+
+      {/* Rows */}
+      <div className="divide-y divide-[#1E2030]/30">
+        {bowlers.map((b, i) => {
+          const isTopBowler = (b.wickets || 0) > 0 && b.name === topBowler?.name;
+          return (
+            <div key={i} className={`flex items-center px-4 py-2.5 ${isTopBowler ? 'bg-emerald-500/5' : ''}`}>
+              <div className="flex-1 min-w-0 pr-2 flex items-center gap-1.5">
+                <span className="text-white/70 text-sm font-semibold truncate">{b.name}</span>
+                {(b.wickets || 0) > 0 && (
+                  <span className="text-emerald-400 text-[10px] font-bold shrink-0">+{b.wickets}W</span>
+                )}
+              </div>
+              <div className="flex items-center shrink-0">
+                <span className="text-white/40 text-xs w-8 text-right">{b.overs || 0}</span>
+                <span className="text-white/40 text-xs w-8 text-right">{b.maidens || 0}</span>
+                <span className="text-white/70 text-sm w-8 text-right font-bold">{b.runs || 0}</span>
+                <span className={`text-sm w-8 text-right font-bold ${(b.wickets || 0) > 0 ? 'text-emerald-400' : 'text-white/40'}`}>
+                  {b.wickets || 0}
+                </span>
+                <span className="text-white/30 text-[10px] w-12 text-right">
+                  {typeof b.economy === 'number' ? b.economy.toFixed(1) : '0.0'}
+                </span>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
