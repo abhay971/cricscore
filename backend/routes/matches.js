@@ -85,7 +85,7 @@ router.post('/:tournamentId/matches', matchCreationLimiter, authenticateAdmin, a
   await tournament.save();
 
   // Create first innings (use trimmed names from saved match, not raw request body)
-  const battingTeam = getBattingFirstTeam(tossWinner, tossDecision, match.team1.name, match.team2.name);
+  const battingTeam = getBattingFirstTeam(match.tossWinner, tossDecision, match.team1.name, match.team2.name);
   const bowlingTeam = getBowlingTeam(battingTeam, match.team1.name, match.team2.name);
 
   const innings = new Innings({
