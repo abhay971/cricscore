@@ -101,8 +101,12 @@ const matchSchema = new mongoose.Schema({
 matchSchema.pre('save', async function(next) {
   if (!this.matchId) {
     const year = new Date().getFullYear();
-    const count = await mongoose.model('Match').countDocuments();
-    this.matchId = `M-${year}-${String(count + 1).padStart(3, '0')}`;
+    const last = await mongoose.model('Match')
+      .findOne({ matchId: { $regex: `^M-${year}-` } })
+      .sort({ matchId: -1 })
+      .select('matchId');
+    const lastNum = last ? parseInt(last.matchId.split('-')[2], 10) : 0;
+    this.matchId = `M-${year}-${String(lastNum + 1).padStart(3, '0')}`;
   }
 
   // Generate scorer token if not exists

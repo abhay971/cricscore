@@ -45,8 +45,12 @@ const tournamentSchema = new mongoose.Schema({
 tournamentSchema.pre('save', async function(next) {
   if (!this.tournamentId) {
     const year = new Date().getFullYear();
-    const count = await mongoose.model('Tournament').countDocuments();
-    this.tournamentId = `T-${year}-${String(count + 1).padStart(3, '0')}`;
+    const last = await mongoose.model('Tournament')
+      .findOne({ tournamentId: { $regex: `^T-${year}-` } })
+      .sort({ tournamentId: -1 })
+      .select('tournamentId');
+    const lastNum = last ? parseInt(last.tournamentId.split('-')[2], 10) : 0;
+    this.tournamentId = `T-${year}-${String(lastNum + 1).padStart(3, '0')}`;
   }
   next();
 });
